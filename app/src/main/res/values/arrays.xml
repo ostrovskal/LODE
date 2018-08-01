@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="optionsKeysToggle" translatable="false">
+        <item>music</item>
+        <item>sound</item>
+        <item>scale</item>
+        <item>speed</item>
+    </string-array>
+    <string-array name="optionsKeysSeek" translatable="false">
+        <item>music_volume</item>
+        <item>sound_volume</item>
+        <item>scale_volume</item>
+        <item>speed_volume</item>
+    </string-array>
+    <string-array name="optionsKeysCheck" translatable="false">
+        <item>classic</item>
+        <item>master</item>
+        <item>author</item>
+    </string-array>
+    <string-array name="settings" translatable="false">
+        <item>scale,false</item>
+        <item>speed,false</item>
+        <item>music,true</item>
+        <item>sound,true</item>
+        <item>master,false</item>
+        <item>author,false</item>
+        <item>#author_count,0</item>
+        <item>scale_volume,15,</item>
+        <item>speed_volume,15</item>
+        <item>music_volume,5</item>
+        <item>sound_volume,5</item>
+        <item>theme,0</item>
+        <item>#tmp_theme,0</item>
+        <item>player,PLAYER</item>
+        <item>#system,classic</item>
+        <item>first_start,true</item>
+        <item>#edit_preview,0</item>
+        <item>#edit_level,0</item>
+        <item>#edit_tile,0</item>
+    </string-array>
+    <string-array name="themesNames">
+        <item>Dark</item>
+        <item>Light</item>
+    </string-array>
+</resources>

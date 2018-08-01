@@ -1,0 +1,4 @@
+<resources>
+    <string name="person_not_found">At the level of %d the position of the person isn\'t established!</string>
+    <string name="error_make_or_save">It was not succeeded to create or save the level %d!</string>
+</resources>
