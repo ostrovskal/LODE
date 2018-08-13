@@ -1,6 +1,9 @@
 package ru.ostrovskal.lode.objects
 
-import android.graphics.Point
-import ru.ostrovskal.lode.Constants
+import ru.ostrovskal.lode.Constants.T_ENEMY2_DROP
 
-class Enemy2(pos: Point) : Man(pos, Constants.T_ENEMY2_DROP)
+class Enemy2(x: Int, y: Int) : Man(x, y, T_ENEMY2_DROP) {
+	override fun process(): Boolean {
+		return true
+	}
+}

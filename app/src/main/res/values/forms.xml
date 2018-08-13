@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tag_game" translatable="false">game</string>
+
+    <string name="clazz_game" translatable="false">ru.ostrovskal.lode.forms.FormGame</string>
+</resources>

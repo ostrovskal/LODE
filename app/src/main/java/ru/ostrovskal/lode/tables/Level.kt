@@ -35,17 +35,35 @@ object Level: Table() {
 		@SqlField("creator") @JvmField var auth     = ""
 		@SqlField("system") @JvmField var pack      = ""
 		
-		@JvmField val pool              = mutableListOf<LodeObject>()
+		@JvmField val pool              = mutableListOf<Object>()
 		@JvmField val pointPeson        = Point(-1, -1)
+		@JvmField var useButton         = false
+		// размер спрайта на экране
+		@JvmField var tileCanvasSize 	= 0
 		
 		val width               get()   = buffer[0].toInt()
 		val height              get()   = buffer[1].toInt()
 		
+		inline fun personNull() { pointPeson.set(-1, -1) }
+		
+		inline fun personIsNull() = ( pointPeson.x == -1 || pointPeson.y == -1 )
+		
+		inline fun personPos() = pointPeson
+		
+		inline fun personPos(x: Int, y: Int) { pointPeson.set(x, y) }
+
+		fun personIsRect(x: Int, y: Int): Boolean {
+			val xx = Math.abs(x - pointPeson.x)
+			val yy = Math.abs(y - pointPeson.y)
+			val sz = tileCanvasSize / 2
+			return xx < sz && yy < sz
+		}
+		
 		// Сохранить уровень
 		private fun save() {
 			val sb = StringBuilder(width * height + 10 * 6)
-			// запомнить автор, габариты, золото
-			sb.append("$auth\n").append("$width\n").append("$height\n").append("$gold\n")
+			// запомнить автор, габариты
+			sb.append("$auth\n").append("$width\n").append("$height\n")
 			// перекодировка
 			for(y in 0 until height) {
 				for(x in 0 until width) sb.append(charsOfLevelMap[buffer[x, y]])
@@ -103,14 +121,6 @@ object Level: Table() {
 			bmp.recycle()
 		}
 		
-		inline fun personNull() { pointPeson.set(-1, -1) }
-		
-		inline fun personIsNull() = ( pointPeson.x == -1 || pointPeson.y == -1 )
-		
-		inline fun personPos() = pointPeson
-		
-		inline fun personPos(x: Int, y: Int) { pointPeson.set(x, y) }
-
 		// Создать классический уровень из папки активов
 		fun make(context: Context, pck: String, num: Int) = try {
 			var width = 0
@@ -123,9 +133,8 @@ object Level: Table() {
 						0    -> auth = it
 						1    -> width = v
 						2    -> { buffer = ByteArray(width * v + 2); buffer[0] = width.toByte(); buffer[1] = v.toByte() }
-						3    -> gold = v
 						else -> {
-							val row = idx - 5
+							val row = idx - 4
 							for(col in 0 until width) {
 								buffer[col, row] = charsOfLevelMap.search(it[col], T_NULL.toInt())
 							}
@@ -209,26 +218,27 @@ object Level: Table() {
 		// Установить все объекты уровня
 		private fun setEntities(isGame: Boolean): Boolean {
 			pool.clear()
+			personNull()
 			gold = 0
 			for(y in 0 until height) {
 				var o = remapProp[buffer[0, y]] and MSKO
-				var len = 0
+				var len = 1
 				for(x in 0 until width) {
-					val pt = Point(x, y)
 					val prop = remapProp[buffer[x, y]]
 					val isLen = prop nflags FL
 					val cur = prop and MSKO
 					if(cur != o || isLen) {
 						when(o) {
 							O_PERSON        -> { personPos(x, y); if(isGame) buffer[x, y] = T_NULL.toInt() }
-							O_ENEMY1        -> pool.add(Enemy1(pt))
-							O_ENEMY2        -> pool.add(Enemy2(pt))
-							O_BUTTON        -> pool.add(Button(pt))
-							O_FIRE          -> pool.add(Fire(pt, len))
-							O_PLATFORM_HORZ -> pool.add(Platform(pt, false, len))
-							O_PLATFORM_VERT -> pool.add(Platform(pt, true, len))
-							O_POLZ_HORZ     ->pool.add(Polz(pt, false, len))
-							O_POLZ_VERT     -> pool.add(Polz(pt, true, len))
+							O_ENEMY1        -> pool.add(Enemy1(x, y))
+							O_ENEMY2        -> pool.add(Enemy2(x, y))
+							O_BUTTON        -> pool.add(Button(x, y))
+							O_FIRE          -> pool.add(Fire(x, y, len))
+							O_PLATFORM_HORZ -> pool.add(Platform(x, y, len, false))
+							O_PLATFORM_VERT -> pool.add(Platform(x, y, len, true))
+							O_POLZ_HORZ     -> pool.add(Polz(x, y, len, false))
+							O_POLZ_VERT     -> pool.add(Polz(x, y, len, true))
+							O_GOLD          -> gold++
 						}
 						len = 0
 					}
@@ -237,7 +247,7 @@ object Level: Table() {
 				}
 			}
 			if(personIsNull()) return false
-			pool.add(0, Person(personPos()) )
+			pool.add(0, Person(pointPeson.x, pointPeson.y))
 			return true
 		}
 		

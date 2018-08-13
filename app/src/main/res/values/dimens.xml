@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ************************************************************ -->
+    <!-- размер текста игровых счетчиков -->
+    <dimen name="panel">17sp</dimen>
+    <!-- размер текста счетчиков статистики -->
+    <dimen name="record">10sp</dimen>
+    <!-- размер текста игровых сообщений -->
+    <dimen name="msg">44sp</dimen>
+    <!-- размер финального текста -->
+    <dimen name="finish">22sp</dimen>
+    <!-- высота/ширина элементов -->
+    <dimen name="heightDlgNewSystem">220dp</dimen>
+    <dimen name="widthDlgNewSystem">290dp</dimen>
+    <dimen name="heightEditorDlgActions">300dp</dimen>
+    <dimen name="widthEditorDlgActions">210dp</dimen>
+    <dimen name="heightGameDlgActions">280dp</dimen>
+    <dimen name="widthGameDlgActions">200dp</dimen>
+    <dimen name="heightDlgExit">160dp</dimen>
+    <dimen name="widthDlgExit">290dp</dimen>
+    <dimen name="heightDlgSave">200dp</dimen>
+    <dimen name="widthDlgSave">290dp</dimen>
+    <dimen name="heightDlgDelete">200dp</dimen>
+    <dimen name="widthDlgDelete">290dp</dimen>
+    <dimen name="heightDlgGenerate">210dp</dimen>
+    <dimen name="widthDlgGenerate">300dp</dimen>
+    <dimen name="heightDlgItemOpenPlanet">130dp</dimen>
+    <dimen name="heightDlgItemRecord">140dp</dimen>
+    <dimen name="heightDlgItemChoicePlanet">130dp</dimen>
+    <dimen name="heightDlgItemRecvPlanet">260dp</dimen>
+</resources>

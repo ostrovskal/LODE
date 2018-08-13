@@ -1,6 +1,9 @@
 package ru.ostrovskal.lode.objects
 
-import android.graphics.Point
 import ru.ostrovskal.lode.Constants.T_PERSON_DROP
 
-class Person(pos: Point) : Man(pos, T_PERSON_DROP)
+class Person(x: Int, y: Int) : Man(x, y, T_PERSON_DROP) {
+	override fun process(): Boolean {
+		return super.process()
+	}
+}

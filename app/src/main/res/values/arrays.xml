@@ -42,4 +42,11 @@
         <item>Dark</item>
         <item>Light</item>
     </string-array>
+    <array name="forms">
+        <item>@string/clazz_game</item>
+        <item>@id/mainContainer</item>
+        <item>@string/tag_game</item>
+        <item>1</item>
+
+    </array>
 </resources>

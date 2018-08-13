@@ -4,17 +4,21 @@ import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.ViewManager
 import com.github.ostrovskal.ssh.Constants
+import com.github.ostrovskal.ssh.Constants.*
+import com.github.ostrovskal.ssh.Theme
 import com.github.ostrovskal.ssh.Wnd
 import com.github.ostrovskal.ssh.layouts.AbsLayout
 import com.github.ostrovskal.ssh.singleton.Settings
+import com.github.ostrovskal.ssh.singleton.Sound
 import com.github.ostrovskal.ssh.sql.SQL
-import com.github.ostrovskal.ssh.ui.UiComponent
-import com.github.ostrovskal.ssh.ui.UiCtx
-import com.github.ostrovskal.ssh.ui.absoluteLayout
-import com.github.ostrovskal.ssh.ui.setContent
+import com.github.ostrovskal.ssh.ui.*
 import com.github.ostrovskal.ssh.utils.arrayStr
+import com.github.ostrovskal.ssh.utils.optBool
+import com.github.ostrovskal.ssh.utils.optInt
 import com.github.ostrovskal.ssh.utils.startLog
+import ru.ostrovskal.lode.Constants.*
 import ru.ostrovskal.lode.tables.Level
 import ru.ostrovskal.lode.tables.Pack
 
@@ -25,7 +29,6 @@ class LodeWnd: Wnd() {
 		/**
 		 * Установка уровня звука и музыки
 		 */
-/*
 		fun soundVolume()
 		{
 			val snd = if(KEY_SOUND.optBool) KEY_SOUND_VOLUME.optInt else 0
@@ -33,51 +36,41 @@ class LodeWnd: Wnd() {
 			Sound.setVolume(snd / 20f, mus / 20f)
 		}
 		
-		*/
-/**
+		/**
 		 * Проверить на режим автора
-		 *//*
-
+		 */
 		fun isAuthor() = KEY_AUTHOR_COUNT.optInt > 10 && KEY_AUTHOR.optBool
 		
-		*/
-/**
+		/**
 		 * Применить масштаб
-		 *//*
-
+		 */
 		fun applyScale(value: Int): Int {
 			val scl = if(KEY_SCALE.optBool) KEY_SCALE_VOLUME.optInt else 15
 			return (value * (scl / 15f)).toInt()
 		}
 		
-		*/
-/**
+		/**
 		 * Применить скорость
-		 *//*
-
+		 */
 		fun applySpeed(value: Int): Long {
 			val spd = if(KEY_SPEED.optBool) KEY_SPEED_VOLUME.optInt else 15
 			return (value * (2f - (spd / 15f))).toLong()
 		}
-*/
 	}
 	
 	// Применение темы
 	override fun applyTheme() {
-/*
 		val theme = if(KEY_THEME.optInt == 0) themeDark else themeLight
-		theme[theme.size - 1] = if(KEY_CLASSIC.optBool) R.drawable.classic_sprites else R.drawable.custom_sprites
 		Theme.setTheme(this, theme)
-*/
 	}
 	
-	override fun onCreate(savedInstanceState: Bundle?) {
+	override fun onCreate(state: Bundle?) {
 		startLog(this, "LODE", true, BuildConfig.VERSION_CODE, BuildConfig.VERSION_NAME, BuildConfig.DEBUG)
-		super.onCreate(savedInstanceState)
+		super.onCreate(state)
 		Main().setContent(this, Constants.APP_GAME)
 		// загружаем фрагмент
 		instanceForm(FORM_GAME)
-		//if(savedInstanceState == null) instanceForm(FORM_SPLASH)
+		//if(state == null) instanceForm(FORM_SPLASH)
 	}
 	
 	override fun initialize(restart: Boolean) {
@@ -103,7 +96,7 @@ class LodeWnd: Wnd() {
 	}
 	
 	inner class Main : UiComponent() {
-		override fun createView(ui: UiCtx) = with(ui){
+		override fun createView(ui: UiCtx) = with(ui) {
 			main = absoluteLayout { id = R.id.mainContainer }
 			main
 		}

@@ -1,4 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="person_not_found">At the level of %d the position of the person isn\'t established!</string>
     <string name="error_make_or_save">It was not succeeded to create or save the level %d!</string>
+    <string name="themeLight">light</string>
+    <string name="themeDark">dark</string>
+    <string name="empty_score">000000</string>
+    <string name="empty_counter">000</string>
+    <string name="level_not_found">Level not found!</string>
 </resources>

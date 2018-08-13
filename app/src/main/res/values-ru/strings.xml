@@ -1,4 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="person_not_found">На уровне %d не найден персонаж!</string>
     <string name="error_make_or_save">Не удалось создать или сохранить уровень %d!</string>
+    <string name="no_level">Уровень на найден!</string>
 </resources>

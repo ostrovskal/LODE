@@ -1,5 +1,9 @@
 package ru.ostrovskal.lode.objects
 
-import android.graphics.Point
+import ru.ostrovskal.lode.Constants.T_POLZ_H_MIDDLE
 
-class Polz(pos: Point, private val isVert: Boolean, private val length: Int) : LodeObject(pos)
+class Polz(x: Int, y: Int, len: Int, private val vert: Boolean) : Object(x, y, len, T_POLZ_H_MIDDLE) {
+	override fun process(): Boolean {
+		return true
+	}
+}

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item type="id" name="game"/>
+    <item type="id" name="editor"/>
+    <item type="id" name="gameContainer"/>
+    <item type="id" name="editorContainer"/>
+</resources>

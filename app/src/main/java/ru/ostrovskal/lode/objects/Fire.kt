@@ -1,5 +1,9 @@
 package ru.ostrovskal.lode.objects
 
-import android.graphics.Point
+import ru.ostrovskal.lode.Constants.T_FIRE0
 
-class Fire(pos: Point, private val length: Int) : LodeObject(pos)
+class Fire(x: Int, y: Int, length: Int) : Object(x, y, length, T_FIRE0) {
+	override fun process(): Boolean {
+		return true
+	}
+}

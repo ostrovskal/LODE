@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="I_NULL">0</integer>
+    <integer name="I_YES">1</integer>
+    <integer name="I_NO">2</integer>
+    <integer name="I_EXIT">3</integer>
+    <integer name="I_NEW_LEVEL">4</integer>
+    <integer name="I_SELECT_LEVEL">5</integer>
+    <integer name="I_SAVE_OPTIONS">6</integer>
+    <integer name="I_SEND_PACK">7</integer>
+    <integer name="I_EDITOR">8</integer>
+    <integer name="I_HELP">9</integer>
+    <integer name="I_TEST_LEVEL">10</integer>
+    <integer name="I_PROP_LEVEL">11</integer>
+    <integer name="I_DEFAULT_OPTIONS">12</integer>
+    <integer name="I_OPEN_LEVEL">13</integer>
+    <integer name="I_RECV_PACK">14</integer>
+    <integer name="I_PREVIEW_LEVEL">15</integer>
+    <integer name="I_SAVE_LEVEL">16</integer>
+    <integer name="I_SKULL1">17</integer>
+    <integer name="I_SKULL2">18</integer>
+    <integer name="I_GAME">19</integer>
+    <integer name="I_BLOCKED">20</integer>
+    <integer name="I_OPTIONS">21</integer>
+    <integer name="I_STAR1">22</integer>
+    <integer name="I_STAR2">23</integer>
+    <integer name="I_DELETE_LEVEL">24</integer>
+    <integer name="I_RECORD">25</integer>
+</resources>
