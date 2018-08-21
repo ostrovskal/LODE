@@ -13,7 +13,6 @@
         <item>speed_volume</item>
     </string-array>
     <string-array name="optionsKeysCheck" translatable="false">
-        <item>classic</item>
         <item>master</item>
         <item>author</item>
     </string-array>
@@ -32,21 +31,143 @@
         <item>theme,0</item>
         <item>#tmp_theme,0</item>
         <item>player,PLAYER</item>
-        <item>#system,classic</item>
+        <item>#pack,classic</item>
         <item>first_start,true</item>
         <item>#edit_preview,0</item>
         <item>#edit_level,0</item>
         <item>#edit_tile,0</item>
+        <item>#type_level,0</item>
+    </string-array>
+    <string-array name="levelTypes">
+        <item>Empties</item>
+        <item>Wall</item>
+        <item>Gold</item>
+        <item>Trap</item>
     </string-array>
     <string-array name="themesNames">
         <item>Dark</item>
         <item>Light</item>
     </string-array>
+    <string-array name="sound" translatable="false">
+        <item>fx/take.ogg</item>
+        <item>fx/volume.ogg</item>
+        <item>fx/destr.ogg</item>
+        <item>fx/dead.ogg</item>
+        <item>fx/cleared.ogg</item>
+        <item>fx/next.ogg</item>
+        <item>fx/fire.ogg</item>
+    </string-array>
+    <array name="music">
+    </array>
     <array name="forms">
         <item>@string/clazz_game</item>
         <item>@id/mainContainer</item>
         <item>@string/tag_game</item>
         <item>1</item>
 
+        <item>@string/clazz_choice</item>
+        <item>@id/mainContainer</item>
+        <item>@string/tag_choice</item>
+        <item>1</item>
+
+        <item>@string/clazz_options</item>
+        <item>@id/mainContainer</item>
+        <item>@string/tag_options</item>
+        <item>1</item>
+
+        <item>@string/clazz_editor</item>
+        <item>@id/mainContainer</item>
+        <item>@string/tag_editor</item>
+        <item>1</item>
+
+        <item>@string/clazz_help</item>
+        <item>@id/mainContainer</item>
+        <item>@string/tag_game_help</item>
+        <item>1</item>
+
+        <item>@string/clazz_dialog</item>
+        <item>0</item>
+        <item>@string/tag_dialog_exit</item>
+        <item>0</item>
+
+        <item>@string/clazz_records</item>
+        <item>@id/mainContainer</item>
+        <item>@string/tag_records</item>
+        <item>1</item>
+
+        <item>@string/clazz_splash</item>
+        <item>@id/mainContainer</item>
+        <item>@string/tag_splash</item>
+        <item>0</item>
+
+        <item>@string/clazz_menu</item>
+        <item>@id/mainContainer</item>
+        <item>@string/tag_menu</item>
+        <item>0</item>
+
+        <item>@string/clazz_e_actions</item>
+        <item>0</item>
+        <item>@string/tag_dialog_e_actions</item>
+        <item>1</item>
+
+        <item>@string/clazz_level_open</item>
+        <item>@id/editorContainer</item>
+        <item>@string/tag_level_open</item>
+        <item>1</item>
+
+        <item>@string/clazz_level_np</item>
+        <item>@id/editorContainer</item>
+        <item>@string/tag_level_new</item>
+        <item>1</item>
+
+        <item>@string/clazz_level_np</item>
+        <item>@id/editorContainer</item>
+        <item>@string/tag_level_prop</item>
+        <item>1</item>
+
+        <item>@string/clazz_dialog</item>
+        <item>0</item>
+        <item>@string/tag_dialog_delete</item>
+        <item>1</item>
+
+        <item>@string/clazz_dialog</item>
+        <item>0</item>
+        <item>@string/tag_dialog_generate</item>
+        <item>1</item>
+
+        <item>@string/clazz_dialog</item>
+        <item>0</item>
+        <item>@string/tag_dialog_save</item>
+        <item>1</item>
+
+        <item>@string/clazz_send</item>
+        <item>@id/editorContainer</item>
+        <item>@string/tag_send</item>
+        <item>1</item>
+
+        <item>@string/clazz_recv</item>
+        <item>@id/mainContainer</item>
+        <item>@string/tag_recv</item>
+        <item>1</item>
+
+        <item>@string/clazz_help</item>
+        <item>@id/gameContainer</item>
+        <item>@string/tag_finish</item>
+        <item>1</item>
+
+        <item>@string/clazz_help</item>
+        <item>@id/editorContainer</item>
+        <item>@string/tag_editor_help</item>
+        <item>1</item>
+
+        <item>@string/clazz_new_pack</item>
+        <item>0</item>
+        <item>@string/tag_dialog_new_pack</item>
+        <item>1</item>
+
+        <item>@string/clazz_g_actions</item>
+        <item>0</item>
+        <item>@string/tag_dialog_g_actions</item>
+        <item>1</item>
     </array>
 </resources>

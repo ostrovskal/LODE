@@ -6,8 +6,7 @@ import android.os.Message
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.github.ostrovskal.ssh.Constants
-import com.github.ostrovskal.ssh.Constants.ACTION_EXIT
-import com.github.ostrovskal.ssh.Constants.WRAP
+import com.github.ostrovskal.ssh.Constants.*
 import com.github.ostrovskal.ssh.Form
 import com.github.ostrovskal.ssh.ui.*
 import com.github.ostrovskal.ssh.utils.config
@@ -30,7 +29,7 @@ class FormGame : Form() {
 			if(tm > System.currentTimeMillis()) {
 				// Если тест - просто выход
 				if(game.isTest) {
-					sendResult(Constants.MSG_FORM, Constants.ACTION_EXIT)
+					sendResult(MSG_FORM, ACTION_EXIT)
 				} else {
 					wnd.instanceForm(FORM_DLG_G_ACTIONS)
 				}
@@ -51,7 +50,7 @@ class FormGame : Form() {
 				when(arg1) {
 					ACTION_LOAD         -> s.send(a1 = ACTION_LOAD, a2 = arg2)
 					ACTION_EXIT         -> footer(Constants.BTN_NO, 0)
-					ACTION_FINISH       -> {}//game.finishForm()
+					ACTION_FINISH       -> game.finishForm()
 				}
 			}
 		}
@@ -60,19 +59,21 @@ class FormGame : Form() {
 	override fun inflateContent(container: LayoutInflater): UiCtx {
 		val port = config.isVert
 		return UI {
-			linearLayout(port) {
-				containerLayout(100, 95, true) {
+			linearLayout {
+				containerLayout(100, if(port) 94 else 92, true) {
 					id = R.id.gameContainer
 					game = gameView { id = R.id.game }
 				}.lps(WRAP, WRAP)
-				root = cellLayout(15, 1, 1.dp) {
+				root = cellLayout(if(port) 15 else 28, 3, 1.dp, false) {
+					backgroundSet(style_panel)
+					val fpos = if(port) 0 else 7
 					// очки
-					button(style_tile_lode) { numResource = R.integer.TILE_SCORE }.lps(0, 0, 1, 1)
-					text(R.string.empty_score, style_text_counters).lps(1, 0, 6, 1)
+					button(style_panel_tile) { numResource = R.integer.TILE_SCORE }.lps(1 + fpos, 1, 1, 2)
+					text(R.string.empty_score, style_text_counters).lps(2 + fpos, 1, 6, 2)
 					// жизни, золото, уровень
 					repeat(3) {
-						button(style_tile_lode) { numResource = tilesGamePanel[it] }.lps(4 + it * 4, 0, 1, 1)
-						text(R.string.empty_counter, style_text_counters).lps(5 + it * 4, 0, 3, 1)
+						button(style_panel_tile) { numResource = tilesGamePanel[it] }.lps(6 + fpos + it * 3, 1, 1, 2)
+						text(R.string.empty_counter, style_text_counters).lps(7 + fpos + it * 3, 1, 3, 2)
 					}
 				}
 			}

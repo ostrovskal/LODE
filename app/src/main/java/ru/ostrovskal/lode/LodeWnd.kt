@@ -4,20 +4,18 @@ import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.view.ViewManager
 import com.github.ostrovskal.ssh.Constants
-import com.github.ostrovskal.ssh.Constants.*
 import com.github.ostrovskal.ssh.Theme
 import com.github.ostrovskal.ssh.Wnd
 import com.github.ostrovskal.ssh.layouts.AbsLayout
 import com.github.ostrovskal.ssh.singleton.Settings
 import com.github.ostrovskal.ssh.singleton.Sound
 import com.github.ostrovskal.ssh.sql.SQL
-import com.github.ostrovskal.ssh.ui.*
-import com.github.ostrovskal.ssh.utils.arrayStr
-import com.github.ostrovskal.ssh.utils.optBool
-import com.github.ostrovskal.ssh.utils.optInt
-import com.github.ostrovskal.ssh.utils.startLog
+import com.github.ostrovskal.ssh.ui.UiComponent
+import com.github.ostrovskal.ssh.ui.UiCtx
+import com.github.ostrovskal.ssh.ui.absoluteLayout
+import com.github.ostrovskal.ssh.ui.setContent
+import com.github.ostrovskal.ssh.utils.*
 import ru.ostrovskal.lode.Constants.*
 import ru.ostrovskal.lode.tables.Level
 import ru.ostrovskal.lode.tables.Pack
@@ -64,13 +62,12 @@ class LodeWnd: Wnd() {
 		Theme.setTheme(this, theme)
 	}
 	
-	override fun onCreate(state: Bundle?) {
+	override fun onCreate(savedInstanceState: Bundle?) {
 		startLog(this, "LODE", true, BuildConfig.VERSION_CODE, BuildConfig.VERSION_NAME, BuildConfig.DEBUG)
-		super.onCreate(state)
+		super.onCreate(savedInstanceState)
 		Main().setContent(this, Constants.APP_GAME)
 		// загружаем фрагмент
-		instanceForm(FORM_GAME)
-		//if(state == null) instanceForm(FORM_SPLASH)
+		if(savedInstanceState == null) instanceForm(FORM_MENU)
 	}
 	
 	override fun initialize(restart: Boolean) {
@@ -82,7 +79,7 @@ class LodeWnd: Wnd() {
 			// Применяем тему и устанавливаем массивы
 			applyTheme()
 			// Запускаем звуки
-			//Sound.initialize(this, 5, arrayStr(R.array.sound), arrayIDs(R.array.music))
+			Sound.initialize(this, 5, arrayStr(R.array.sound), arrayIDs(R.array.music))
 			// Запускаем БД
 			SQL.connection(this, false, Pack, Level) {
 				var res = it

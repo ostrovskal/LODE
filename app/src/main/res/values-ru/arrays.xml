@@ -4,4 +4,10 @@
         <item>Темная</item>
         <item>Светлая</item>
     </string-array>
+    <string-array name="levelTypes">
+        <item>Пустота</item>
+        <item>Стены</item>
+        <item>Золото</item>
+        <item>Лестницы</item>
+    </string-array>
 </resources>

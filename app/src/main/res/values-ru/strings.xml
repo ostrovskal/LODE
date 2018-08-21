@@ -1,6 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="hint_width">ширина</string>
+    <string name="hint_height">высота</string>
+    <string name="hint_number">позиция</string>
+    <string name="hint_desc">описание</string>
+    <string name="hint_new_pack">имя пакета</string>
+    <string name="hint_price">цена</string>
+    <string name="hint_splash_name">Введите Ваше имя</string>
+
+    <string name="header_options">Установки</string>
+    <string name="header_choice">Выбор уровня</string>
+    <string name="header_record">Достижения</string>
+    <string name="header_help">Помощь</string>
+    <string name="header_dialog_exit">Выход</string>
+    <string name="header_level_new">Новый уровень</string>
+    <string name="header_level_open">Открыть уровень</string>
+    <string name="header_level_prop">Свойства уровня</string>
+    <string name="header_finish">Поздравления</string>
+    <string name="header_dialog_save">Сохранение</string>
+    <string name="header_dialog_delete">Удаление уровня</string>
+    <string name="header_dialog_generate">Генерация уровней</string>
+    <string name="header_send">Отправка пакета уровней</string>
+    <string name="header_recv">Получение пакета уровней</string>
+    <string name="header_dialog_new_pack">Новый пакет</string>
+    <string name="header_dialog_actions">Выбор операции</string>
+
+    <string name="game_actions_exit">Выйти из игры</string>
+    <string name="game_actions_restart">Перезапустить</string>
+    <string name="game_actions_continue">Продолжить</string>
+
+    <string name="options_music">Музыка</string>
+    <string name="options_sound">Звук</string>
+    <string name="options_speed">Скорость</string>
+    <string name="options_scale">Масштаб</string>
+    <string name="options_master">Мастер</string>
+    <string name="options_author">Автор</string>
+
+    <string name="dialog_generate">Вы действительно хотите сгенерировать классические уровни?</string>
+    <string name="dialog_delete">Вы действительно хотите удалить уровень?</string>
+    <string name="dialog_save">Уровень изменен. Сохранить изменения перед выходом?</string>
+    <string name="dialog_exit">Вы действительно хотите выйти?</string>
+
     <string name="person_not_found">На уровне %d не найден персонаж!</string>
     <string name="error_make_or_save">Не удалось создать или сохранить уровень %d!</string>
-    <string name="no_level">Уровень на найден!</string>
+    <string name="level_not_found">Уровень на найден!</string>
+    <string name="msg_test_complete">ТЕСТ ЗАВЕРШЕН</string>
+    <string name="msg_game_over">ИГРА ОКОНЧЕНА</string>
+    <string name="msg_next_level">УРОВЕНЬ ПРОЙДЕН!</string>
+    <string name="msg_person_dead">ЧЕЛОВЕК ПОГИБ</string>
+    <string name="msg_person_suicyded">ПЕРЕЗАПУСК</string>
+    <string name="level">УРОВЕНЬ:</string>
+    <string name="new_pocket">Новый пакет</string>
+    <string name="pack_already_exist">Такой пакет %s уже есть!</string>
+    <string name="lang">ru</string>
+    <string name="copyright">Copyright @ 2018 Шаталов С.В.</string>
+    <string name="rights">Все права защищены.</string>
+    <string name="save_level_success">Уровень упешно сохранен!</string>
+    <string name="save_level_failed">Персонаж не обнаружен!</string>
 </resources>

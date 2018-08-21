@@ -1,10 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="person_not_found">At the level of %d the position of the person isn\'t established!</string>
-    <string name="error_make_or_save">It was not succeeded to create or save the level %d!</string>
-    <string name="themeLight">light</string>
-    <string name="themeDark">dark</string>
-    <string name="empty_score">000000</string>
-    <string name="empty_counter">000</string>
+    <string name="hint_number">position</string>
+    <string name="hint_width">width</string>
+    <string name="hint_height">height</string>
+    <string name="hint_desc">description</string>
+    <string name="hint_new_pack">name of pocket</string>
+    <string name="hint_price">price</string>
+    <string name="hint_splash_name">Enter your name</string>
+
+    <string name="header_level_new">Create level</string>
+    <string name="header_options">Settings</string>
+    <string name="header_choice">Choice of the level</string>
+    <string name="header_record">Records</string>
+    <string name="header_help">Help</string>
+    <string name="header_dialog_exit">Exit of game</string>
+    <string name="header_level_open">Open level</string>
+    <string name="header_level_prop">Properties of level</string>
+    <string name="header_finish">Congratulations</string>
+    <string name="header_dialog_save">Save of modification</string>
+    <string name="header_dialog_delete">Delete of level</string>
+    <string name="header_dialog_generate">Generation of levels</string>
+    <string name="header_dialog_new_pack">New pocket</string>
+    <string name="header_dialog_actions">Operation choice</string>
+    <string name="header_send">Send of level pocket</string>
+    <string name="header_recv">Receive of level pocket</string>
+
+    <string name="game_actions_exit">Exit from game</string>
+    <string name="game_actions_restart">Restart</string>
+    <string name="game_actions_continue">Continue</string>
+
+    <string name="options_music">Music</string>
+    <string name="options_sound">Sound</string>
+    <string name="options_speed">Speed</string>
+    <string name="options_scale">Scale</string>
+    <string name="options_master">Master</string>
+    <string name="options_author">Author</string>
+
+    <string name="dialog_exit">Do you really want to leave?</string>
+    <string name="dialog_generate">Do you really want to generate classical levels?</string>
+    <string name="dialog_delete">Do you really want to remove the level?</string>
+    <string name="dialog_save">The level is changed. To keep changes before an exit?</string>
+
+    <string name="person_not_found" translatable="false">At the level of %d the position of the person isn\'t established!</string>
+    <string name="error_make_or_save" translatable="false">It was not succeeded to create or save the level %d!</string>
+    <string name="themeLight" translatable="false">light</string>
+    <string name="themeDark" translatable="false">dark</string>
+    <string name="empty_score" translatable="false">000000</string>
+    <string name="empty_counter" translatable="false">000</string>
     <string name="level_not_found">Level not found!</string>
+    <string name="save_level_success">The level is successfully kept!</string>
+    <string name="save_level_failed" translatable="false">The person isn\'t found!</string>
+    <string name="pack_already_exist">The %s pocket already is!</string>
+    <string name="copyright">Copyright @ 2018 S.V. Shataloff</string>
+    <string name="rights">All Rights Reserved.</string>
+    <string name="lang">en</string>
+
+    <string name="msg_test_complete">TEST COMPLETE</string>
+    <string name="msg_game_over">GAME OVER</string>
+    <string name="msg_person_suicyded">RESTART</string>
+    <string name="msg_next_level">LEVEL COMPLETE</string>
+    <string name="msg_person_dead">PERSON OF DEAD</string>
+    <string name="level">LEVEL:</string>
+    <string name="panel_text" translatable="false">001</string>
+    <string name="null_text" translatable="false"> </string>
+    <string name="new_pocket">New pocket</string>
+    <string name="panel_text2" translatable="false">002</string>
 </resources>

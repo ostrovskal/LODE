@@ -1,6 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="tag_game" translatable="false">game</string>
+    <string name="tag_choice" translatable="false">choice</string>
+    <string name="tag_options" translatable="false">options</string>
+    <string name="tag_records" translatable="false">records</string>
+    <string name="tag_editor" translatable="false">editor</string>
+    <string name="tag_game_help" translatable="false">game_help</string>
+    <string name="tag_dialog_exit" translatable="false">dialog_exit</string>
+    <string name="tag_splash" translatable="false">splash</string>
+    <string name="tag_menu" translatable="false">menu</string>
+    <string name="tag_dialog_e_actions" translatable="false">dialog_e_actions</string>
+    <string name="tag_level_open" translatable="false">level_open</string>
+    <string name="tag_level_new" translatable="false">level_new</string>
+    <string name="tag_level_prop" translatable="false">level_prop</string>
+    <string name="tag_dialog_delete" translatable="false">dialog_delete</string>
+    <string name="tag_dialog_generate" translatable="false">dialog_generate</string>
+    <string name="tag_dialog_save" translatable="false">dialog_save</string>
+    <string name="tag_send" translatable="false">send</string>
+    <string name="tag_recv" translatable="false">recv</string>
+    <string name="tag_finish" translatable="false">finish</string>
+    <string name="tag_editor_help" translatable="false">editor_help</string>
+    <string name="tag_dialog_new_pack" translatable="false">new_pack</string>
+    <string name="tag_dialog_g_actions" translatable="false">game_actions</string>
 
     <string name="clazz_game" translatable="false">ru.ostrovskal.lode.forms.FormGame</string>
+    <string name="clazz_choice" translatable="false">ru.ostrovskal.lode.forms.FormChoice</string>
+    <string name="clazz_options" translatable="false">ru.ostrovskal.lode.forms.FormOptions</string>
+    <string name="clazz_records" translatable="false">ru.ostrovskal.lode.forms.FormRecords</string>
+    <string name="clazz_editor" translatable="false">ru.ostrovskal.lode.forms.FormEditor</string>
+    <string name="clazz_splash" translatable="false">ru.ostrovskal.lode.forms.FormSplash</string>
+    <string name="clazz_menu" translatable="false">ru.ostrovskal.lode.forms.FormMenu</string>
+    <string name="clazz_e_actions" translatable="false">ru.ostrovskal.lode.forms.FormEditorActions</string>
+    <string name="clazz_level_open" translatable="false">ru.ostrovskal.lode.forms.FormOpen</string>
+    <string name="clazz_level_np" translatable="false">ru.ostrovskal.lode.forms.FormNP</string>
+    <string name="clazz_send" translatable="false">ru.ostrovskal.lode.forms.FormSend</string>
+    <string name="clazz_recv" translatable="false">ru.ostrovskal.lode.forms.FormRecv</string>
+    <string name="clazz_new_pack" translatable="false">ru.ostrovskal.lode.forms.FormNewPack</string>
+    <string name="clazz_g_actions" translatable="false">ru.ostrovskal.lode.forms.FormGameActions</string>
+    <string name="clazz_help" translatable="false">ru.ostrovskal.lode.forms.FormHelp</string>
+    <string name="clazz_dialog" translatable="false">ru.ostrovskal.lode.forms.FormDialog</string>
+
 </resources>

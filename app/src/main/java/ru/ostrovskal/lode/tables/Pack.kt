@@ -4,8 +4,8 @@ import com.github.ostrovskal.ssh.sql.Table
 import com.github.ostrovskal.ssh.utils.optText
 import com.github.ostrovskal.ssh.utils.release
 import com.github.ostrovskal.ssh.utils.releaseRun
-import ru.ostrovskal.lode.Constants
-import ru.ostrovskal.lode.Constants.SYSTEM_DEFAULT
+import ru.ostrovskal.lode.Constants.KEY_PACK
+import ru.ostrovskal.lode.Constants.PACK_DEFAULT
 
 object Pack: Table() {
 	@JvmField val id      = integer("_id").notNull().primaryKey()
@@ -37,18 +37,18 @@ object Pack: Table() {
 				// удалить пакет, если в нем нет планет и дата создания отличается от текущей на 100 минут
 				if(count <= 0L && (curDate - dt) > 360000) {
 					delete { where { name eq nm } }
-					if(nm == Constants.KEY_SYSTEM.optText) Constants.KEY_SYSTEM.optText = SYSTEM_DEFAULT
+					if(nm == KEY_PACK.optText) KEY_PACK.optText = PACK_DEFAULT
 				}
 			}
 		}
-		return countLevels(SYSTEM_DEFAULT) > 0L
+		return countLevels(PACK_DEFAULT) > 0L
 	}
 	
 	// Создание пустой классической системы
 	fun default() {
-		delete { where { name eq SYSTEM_DEFAULT } }
+		delete { where { name eq PACK_DEFAULT } }
 		insert {
-			it[name] = SYSTEM_DEFAULT
+			it[name] = PACK_DEFAULT
 			it[date] = System.currentTimeMillis()
 			it[author] = "OSTROV"
 			it[levels] = 0L

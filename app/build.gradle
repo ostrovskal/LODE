@@ -2,6 +2,14 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
 android {
+    signingConfigs {
+        config {
+            keyAlias 'keyLODE'
+            keyPassword 'IfnfkjdCthutqLODE'
+            storeFile file('E:/Dev/Android/keys_store/sshLODE.jks')
+            storePassword 'IfnfkjdCthutq'
+        }
+    }
     compileSdkVersion 26
     defaultConfig {
         applicationId "ru.ostrovskal.lode"
@@ -16,6 +24,7 @@ android {
             shrinkResources true
             zipAlignEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
         }
     }
     flavorDimensions "default"
@@ -24,6 +33,11 @@ android {
             dimension "default"
             applicationId "ru.ostrovskal.lode.pro"
             resValue "string", "app_name", "LODE PRO"
+            minSdkVersion 19
+            signingConfig signingConfigs.config
+            targetSdkVersion 26
+            versionCode 1
+            versionName '1.0.0'
         }
         trial {
             dimension "default"

@@ -5,7 +5,7 @@
     <integer name="I_NO">2</integer>
     <integer name="I_EXIT">3</integer>
     <integer name="I_NEW_LEVEL">4</integer>
-    <integer name="I_SELECT_LEVEL">5</integer>
+    <integer name="I_CHOICE_LEVEL">5</integer>
     <integer name="I_SAVE_OPTIONS">6</integer>
     <integer name="I_SEND_PACK">7</integer>
     <integer name="I_EDITOR">8</integer>

@@ -6,7 +6,9 @@
     <!-- размер текста счетчиков статистики -->
     <dimen name="record">10sp</dimen>
     <!-- размер текста игровых сообщений -->
-    <dimen name="msg">44sp</dimen>
+    <dimen name="msg">34sp</dimen>
+    <!-- размер текста номера уровня -->
+    <dimen name="level">23sp</dimen>
     <!-- размер финального текста -->
     <dimen name="finish">22sp</dimen>
     <!-- высота/ширина элементов -->
