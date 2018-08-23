@@ -41,7 +41,7 @@ class ViewGame(context: Context) : ViewCommon(context) {
 		setControllerMap(lodeController)
 		this.controllerButtonNotify = object : Controller.Notify {
 			override fun onController(buttons: Int) {
-				Level.person.control = buttons
+				Level.person.control = (Level.person.control and 31.inv()) or buttons
 			}
 		}
 	}
@@ -78,7 +78,7 @@ class ViewGame(context: Context) : ViewCommon(context) {
 	private val updatePanel = Runnable {
 		var idx = 0
 		wnd.findForm<FormGame>("game")?.root?.loopChildren {
-			if(idx flags 1) {
+			if(idx test 1) {
 				val index = idx / 2
 				val value = params[index]
 				if(value != paramsCache[index]) {

@@ -1,23 +1,21 @@
 package ru.ostrovskal.lode.objects
 
-import com.github.ostrovskal.ssh.utils.flags
-import com.github.ostrovskal.ssh.utils.get
-import com.github.ostrovskal.ssh.utils.set
-import ru.ostrovskal.lode.Constants.SEGMENTS
-import ru.ostrovskal.lode.Constants.T_FIRE0
+import ru.ostrovskal.lode.Constants.*
 import ru.ostrovskal.lode.tables.Level
+import ru.ostrovskal.lode.tables.Level.fromMap
 import ru.ostrovskal.lode.views.ViewGame
 
 class Fire(x: Int, y: Int, length: Int) : Object(x, y, length, T_FIRE0) {
 	override fun process(own: ViewGame): Boolean {
-		val xx = x / SEGMENTS
-		val yy = y / SEGMENTS
-		count++
-		if(count flags 1) {
-			repeat(len) {
-				val t = (((Level.buffer[xx + it, yy] - T_FIRE0) + 1) and 3)
-				Level.buffer[xx + it, yy] = t + T_FIRE0.toInt()
+		repeat(len) {
+			val t = if(fromMap(x + it * SEGMENTS, y - SEGMENTS) and MSKT == O_FIRE) {
+				showLavaTiles[((it and 3) + ((count shr 1) and 3))]
+			} else {
+				if(Level.rnd.nextInt(50) == 1)
+					Level.pool.add(Bubble(x + it * SEGMENTS + Level.rnd.nextInt(SEGMENTS), y - SEGMENTS / 2))
+				showFireTiles[((it and 7) + ((count shr 1)) and 7)]
 			}
+			own.drawTile(x + it * SEGMENTS, y, t)
 		}
 		return true
 	}

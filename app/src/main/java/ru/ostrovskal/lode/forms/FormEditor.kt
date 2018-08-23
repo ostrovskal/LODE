@@ -22,7 +22,7 @@ import ru.ostrovskal.lode.views.ViewEditor
 
 class FormEditor : Form() {
 	
-	private var numLevel: Text?     = null
+	private var nameLevel: Text?     = null
 	
 	// текущий тайл
 	@JvmField var curTile: Tile? 	= null
@@ -50,8 +50,9 @@ class FormEditor : Form() {
 					ACTION_DELETE         -> s.send(a1 = ACTION_DELETE)
 					ACTION_NEW            -> s.send(a1 = ACTION_NEW, a2 = arg2)
 					ACTION_SAVE           -> s.send(a1 = ACTION_SAVE, a2 = arg2)
-					ACTION_NUM            -> {
-						numLevel?.text = (Level.num + 1).toString().padStart(3, '0')
+					ACTION_PROP           -> s.send(a1 = ACTION_PROP, a2 = arg2)
+					ACTION_NAME           -> {
+						nameLevel?.text = Level.name
 						KEY_EDIT_LEVEL.optText = "${Level.num}#${Level.pack}"
 					}
 					Constants.ACTION_EXIT -> footer(Constants.BTN_NO, 0)
@@ -62,38 +63,34 @@ class FormEditor : Form() {
 	
 	override fun inflateContent(container: LayoutInflater): UiCtx = UI {
 		val port = config.isVert
-		linearLayout {
-			containerLayout(100, if(port) 84 else 80, true) {
+		linearLayout(port) {
+			containerLayout(if(port) 100 else 84, if(port) 84 else 100, true) {
 				id = R.id.editorContainer
 				editor = editorView { id = R.id.editor }
 			}.lps(Constants.WRAP, Constants.WRAP)
-			root = cellLayout(if(port) 38 else 87, 12, 1.dp) {
-				backgroundSet(style_panel)
-				val dx = if(port) 4 else 5
-				var y = if(port) 4 else 6
-				if(port) {
-					repeat(2) {row ->
-						repeat(9) {
-							button(style_tile_lode) {
-								setOnClickListener(this@FormEditor)
-								numResource = tilesEditorPanel[row * 9 + it]
-							}.lps(1 + dx * it, y, dx, 4)
-						}
-						y += 4
-					}
-				} else {
-					repeat(17) {
+			root = cellLayout(if(port) 40 else 12, if(port) 12 else 44) {
+				backgroundSet(style = if(port) style_panel_h else style_panel_v)
+				var x = if(port) 0 else 4
+				var y = 4
+				val dx = if(port) 0 else 4
+				val dy = if(port) 4 else 0
+				repeat(2) { row ->
+					repeat(10) {
 						button(style_tile_lode) {
 							setOnClickListener(this@FormEditor)
-							numResource = tilesEditorPanel[it]
-						}.lps(1 + dx * it, 6, dx, 6)
+							isClickable = true
+							numResource = tilesEditorPanel[row * 10 + it]
+						}.lps(x + dy * it, y + dx * it, 4, 4)
 					}
+					x += dx
+					y += dy
 				}
-				numLevel = text(R.string.null_text, style_text_level) {
+				nameLevel = text(R.string.null_text, style_text_level) {
 					setOnClickListener {
 						if(fragmentManager.backStackEntryCount == 1) wnd.instanceForm(FORM_DLG_E_ACTIONS)
 					}
-				}.lps(0, 0, if(port) 38 else 87, 5)
+					if(port) lps(0, 0, 40, 4) else lps(0, 0, 12, 4)
+				}
 			}
 		}
 	}
@@ -128,13 +125,13 @@ class FormEditor : Form() {
 	override fun saveState(state: Bundle) {
 		editor.saveState(state)
 		super.saveState(state)
-		numLevel?.apply { state.put("num_level", text) }
+		nameLevel?.apply { state.put("name_level", text) }
 	}
 	
 	override fun restoreState(state: Bundle) {
 		super.restoreState(state)
 		editor.restoreState(state)
-		numLevel?.apply { text = state.getString("num_level") }
+		nameLevel?.apply { text = state.getString("name_level") }
 	}
 	
 	override fun setAnimation(trans: FragmentTransaction) { trans.setTransition(FragmentTransaction.TRANSIT_NONE) }

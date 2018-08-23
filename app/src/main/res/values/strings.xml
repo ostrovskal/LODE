@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="hint_name">name</string>
     <string name="hint_number">position</string>
     <string name="hint_width">width</string>
     <string name="hint_height">height</string>
@@ -40,6 +41,7 @@
     <string name="dialog_generate">Do you really want to generate classical levels?</string>
     <string name="dialog_delete">Do you really want to remove the level?</string>
     <string name="dialog_save">The level is changed. To keep changes before an exit?</string>
+    <string name="level_name_already_exist">The level with the name %s already exists!</string>
 
     <string name="person_not_found" translatable="false">At the level of %d the position of the person isn\'t established!</string>
     <string name="error_make_or_save" translatable="false">It was not succeeded to create or save the level %d!</string>

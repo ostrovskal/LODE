@@ -55,7 +55,7 @@
         <item>fx/dead.ogg</item>
         <item>fx/cleared.ogg</item>
         <item>fx/next.ogg</item>
-        <item>fx/fire.ogg</item>
+        <item>fx/enemy.ogg</item>
     </string-array>
     <array name="music">
     </array>

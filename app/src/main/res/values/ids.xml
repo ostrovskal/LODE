@@ -23,4 +23,5 @@
     <item name="etHeight" type="id"/>
     <item name="etNumber" type="id"/>
     <item name="slType" type="id"/>
+    <item name="etName" type="id"/>
 </resources>

@@ -60,12 +60,12 @@ class FormGame : Form() {
 		val port = config.isVert
 		return UI {
 			linearLayout {
-				containerLayout(100, if(port) 94 else 92, true) {
+				containerLayout(100, if(port) 92 else 90, true) {
 					id = R.id.gameContainer
 					game = gameView { id = R.id.game }
 				}.lps(WRAP, WRAP)
 				root = cellLayout(if(port) 15 else 28, 3, 1.dp, false) {
-					backgroundSet(style_panel)
+					backgroundSet(style_panel_h)
 					val fpos = if(port) 0 else 7
 					// очки
 					button(style_panel_tile) { numResource = R.integer.TILE_SCORE }.lps(1 + fpos, 1, 1, 2)

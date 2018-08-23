@@ -21,8 +21,8 @@ import ru.ostrovskal.lode.R.integer.*
 import ru.ostrovskal.lode.tables.Level
 
 class FormMenu: Form() {
-	private val coordPort   = intArrayOf(6, 3, 0, 8, 0, 12, 0, 24, 12, 12, 12, 24)
-	private val coordLand   = intArrayOf(12, 1, 3, 5, 3, 9, 0, 14, 21, 9, 24, 14)
+	private val coordPort   = intArrayOf(6, 3, 0, 10, 12, 10, 0, 24, 0, 24, 12, 24)
+	private val coordLand   = intArrayOf(12, 1, 3, 7, 21, 7, 0, 14, 0, 14, 24, 14)
 	private val btnIcons    = intArrayOf(I_GAME, I_CHOICE_LEVEL, I_OPTIONS, I_EDITOR, I_HELP, I_EXIT)
 	private val buttons     = mutableListOf<Tile>()
 	
@@ -48,8 +48,13 @@ class FormMenu: Form() {
 			shake?.repeatCount = 5
 			buttons[4].startAnimation(shake)
 		}
-		// кнопка редактора
-		buttons[3].visibility = View.VISIBLE//if(LodeWnd.isAuthor()) View.VISIBLE else View.GONE
+		if(!LodeWnd.isAuthor()) {
+			// кнопка справки
+			buttons[4].visibility = View.GONE
+		} else {
+			// кнопка редактора
+			buttons[3].visibility = View.GONE
+		}
 		// кнопка выбор планеты
 		buttons[1].isEnabled = Level.exist { Level.blocked eq 0 }
 		// устанавливаем громкость

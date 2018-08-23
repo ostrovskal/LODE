@@ -15,7 +15,7 @@
     <integer name="I_DEFAULT_OPTIONS">12</integer>
     <integer name="I_OPEN_LEVEL">13</integer>
     <integer name="I_RECV_PACK">14</integer>
-    <integer name="I_PREVIEW_LEVEL">15</integer>
+    <integer name="I_PREVIEW_OFF">15</integer>
     <integer name="I_SAVE_LEVEL">16</integer>
     <integer name="I_SKULL1">17</integer>
     <integer name="I_SKULL2">18</integer>
@@ -26,4 +26,6 @@
     <integer name="I_STAR2">23</integer>
     <integer name="I_DELETE_LEVEL">24</integer>
     <integer name="I_RECORD">25</integer>
+    <integer name="I_PREVIEW_ON">26</integer>
+    <integer name="I_SKULL_ON">27</integer>
 </resources>

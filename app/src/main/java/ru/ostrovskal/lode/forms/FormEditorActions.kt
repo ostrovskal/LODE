@@ -44,8 +44,10 @@ class FormEditorActions : FormDialog() {
 		val isMap = editor.isLevel
 		// save, preview
 		root.byIdx<Tile>(FORM_CHOICE_SAVE).isEnabled = (editor.modify && isMap)
-		root.byIdx<Tile>(FORM_CHOICE_PREV).isEnabled = isMap
-		root.byIdx<Tile>(FORM_CHOICE_PREV).isChecked = editor.preview
+		root.byIdx<Tile>(FORM_CHOICE_PREV).apply {
+			isEnabled = isMap
+			iconResource = if(editor.preview) R.integer.I_PREVIEW_ON else R.integer.I_PREVIEW_OFF
+		}
 		// prop, delete
 		root.byIdx<Tile>(FORM_CHOICE_PROP).isEnabled = isMap
 		root.byIdx<Tile>(FORM_CHOICE_DEL).isEnabled = isMap

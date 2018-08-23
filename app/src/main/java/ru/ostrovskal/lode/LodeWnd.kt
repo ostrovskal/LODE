@@ -61,7 +61,7 @@ class LodeWnd: Wnd() {
 		val theme = if(KEY_THEME.optInt == 0) themeDark else themeLight
 		Theme.setTheme(this, theme)
 	}
-	
+	// (8 16) shr 2 = (2 4) - 3 = (-1 1)
 	override fun onCreate(savedInstanceState: Bundle?) {
 		startLog(this, "LODE", true, BuildConfig.VERSION_CODE, BuildConfig.VERSION_NAME, BuildConfig.DEBUG)
 		super.onCreate(savedInstanceState)

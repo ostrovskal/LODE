@@ -15,7 +15,6 @@ import com.github.ostrovskal.ssh.adapters.SelectAdapter
 import com.github.ostrovskal.ssh.sql.Rowset
 import com.github.ostrovskal.ssh.ui.*
 import com.github.ostrovskal.ssh.utils.optText
-import com.github.ostrovskal.ssh.widgets.Text
 import com.github.ostrovskal.ssh.widgets.Tile
 import com.github.ostrovskal.ssh.widgets.lists.BaseListView
 import com.github.ostrovskal.ssh.widgets.lists.Select
@@ -34,7 +33,7 @@ class FormChoice: Form() {
 		adapter.path = "${Constants.folderFiles}/miniatures/$result"
 	}
 	
-	override fun queryConnector() = Level.select(Level.position, Level.position, Level.blocked, Level.id) {
+	override fun queryConnector() = Level.select(Level.title, Level.title, Level.blocked, Level.id) {
 		where { Level.system.eq(result) }
 		orderBy(Level.position)
 	}
@@ -93,8 +92,7 @@ class FormChoice: Form() {
 		private val iCancel = context.resources.getInteger(R.integer.I_BLOCKED)
 		
 		override fun bindField(view: View?, rs: Rowset, idx: Int) {
-			if(idx == 1 && view is Text) view.text = (rs.integer(idx) + 1).toString().padStart(3, '0')
-			else if(view is Tile && rs.boolean("blocked"))
+			if(view is Tile && rs.boolean("blocked"))
 				view.setBitmap("icon_tiles", 10, 3, iCancel)
 			else super.bindField(view, rs, idx)
 		}

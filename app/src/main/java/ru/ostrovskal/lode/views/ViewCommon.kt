@@ -92,6 +92,9 @@ open class ViewCommon(context: Context) : Surface(context) {
 	
 	// Тайлы
 	private val tiles: Bitmap?          get() = wnd.bitmapGetCache("sprites")
+
+	// Тайлы
+	private val bkg: Bitmap?            get() = wnd.bitmapGetCache("bkg")
 	
 	// Ректы
 	private var canvasRect 				= Rect()
@@ -99,6 +102,8 @@ open class ViewCommon(context: Context) : Surface(context) {
 	private var bitmapRect 				= Rect()
 	
 	private var messageRect 			= RectF()
+	
+	private val levRect                 = Rect()
 	
 	// Кисть для отрисовки сообщения
 	private var sys 					= Paint()
@@ -108,7 +113,7 @@ open class ViewCommon(context: Context) : Surface(context) {
 	
 	init {
 		delay = LodeWnd.applySpeed(STD_GAME_SPEED)
-		tileBitmapSize = (tiles?.height ?: 0) / 8
+		tileBitmapSize = (tiles?.height ?: 0) / 10
 	}
 	
 	override fun restoreState(state: Bundle, vararg params: Any?) {
@@ -131,8 +136,6 @@ open class ViewCommon(context: Context) : Surface(context) {
 				canvasSegments.set(if(screenSegments.w > Level.mapSegments.w) Level.mapSegments.w else screenSegments.w,
 				                   if(screenSegments.h > Level.mapSegments.h) Level.mapSegments.h else screenSegments.h)
 				Touch.reset()
-				wnd.wndHandler?.send(MSG_FORM, 0, ACTION_NUM)
-				"canvasOffset: $canvasOffset creenSegments: $screenSegments canvasSegments: $canvasSegments screenSize: $screenSize canvasTileSize: $canvasTileSize".debug()
 			}
 			iPt.set(Level.person.x, Level.person.y)
 			mapOffsetSegments.set(iPt.x - canvasSegments.w / 2, iPt.y - canvasSegments.h / 2)
@@ -176,12 +179,16 @@ open class ViewCommon(context: Context) : Surface(context) {
 			val coX = previewCO.x - xoo * segTileCanvas
 			val coY = previewCO.y - yoo * segTileCanvas
 			
+			levRect.set(previewCO.x, previewCO.y, w * canvasTileSize, h * canvasTileSize)
+			levRect.info()
+			canvas.drawBitmap(bkg, null, levRect, nil)
+
 			repeat(h) {y ->
 				canvasRect.top = coY + y * previewBlk.h
 				canvasRect.bottom = canvasRect.top + previewBlk.h
 				repeat(w) { x ->
 					val tile = buffer[xo + x, yo + y]  and MSKT
-					val v = if(this is ViewGame) remapTiles[tile] else remapEditorTiles[tile]
+					val v = if(this is ViewGame) remapGameTiles[tile] else remapEditorTiles[tile]
 					if(v != T_NULL.toInt()) {
 						bitmapRect.left = v % 10 * tileBitmapSize
 						bitmapRect.top = v / 10 * tileBitmapSize
@@ -197,6 +204,7 @@ open class ViewCommon(context: Context) : Surface(context) {
 				var idx = 0
 				while(idx < Level.pool.size) {
 					val o = Level.pool[idx]
+					o.count++
 					if(!o.process(this)) {
 						// объект уничтожен
 						Level.pool.removeAt(idx)
@@ -262,13 +270,10 @@ open class ViewCommon(context: Context) : Surface(context) {
 								// загружаем карту
 								position = msg.arg2
 								val success = Level.load(position, editor == null)
+								h.send(MSG_FORM, a1 = ACTION_NAME)
 								if(success) {
 									initMap(true)
-									if(editor != null) editor.modify = false
-									else {
-										strBuffer.fmt("${resources.getString(R.string.level)}%3d", Level.num.toInt() + 1)
-										sysMsg = strBuffer.toString()
-									}
+									if(editor != null) editor.modify = false else sysMsg = Level.name
 									s.send(STATUS_PREPARED, MESSAGE_DELAYED)
 								}
 								else {
@@ -285,7 +290,13 @@ open class ViewCommon(context: Context) : Surface(context) {
 								else {
 									editor?.modify = false
 									s.send(STATUS_MESSAGE, a1 = STATUS_PREPARED, o = if(success) R.string.save_level_success else R.string.save_level_failed)
+									h.send(MSG_FORM, a1 = ACTION_NAME)
 								}
+							}
+							ACTION_PROP     -> {
+								editor?.modify = true
+								initMap(true)
+								h.send(MSG_FORM, a1 = ACTION_NAME)
 							}
 							ACTION_DELETE   -> {
 								val count = Pack.countLevels(Level.pack) - 1
@@ -294,7 +305,7 @@ open class ViewCommon(context: Context) : Surface(context) {
 								editor?.modify = false
 							}
 							ACTION_NEW      -> {
-								//Level.generator(context, arg2)
+								Level.generator(context, arg2)
 								editor?.modify = false
 								initMap(true)
 							}

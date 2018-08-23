@@ -39,7 +39,7 @@ class FormOpen: Form() {
 		adapter.path = "${Constants.folderFiles}/miniatures/$result"
 	}
 	
-	override fun queryConnector() = Level.select(Level.position, Level.position, Level.create, Level.position, Level.id) {
+	override fun queryConnector() = Level.select(Level.title, Level.title, Level.create, Level.position, Level.id) {
 		where { Level.system eq result }
 		orderBy(Level.position)
 	}
@@ -104,9 +104,7 @@ class FormOpen: Form() {
 		}
 		
 		override fun bindField(view: View?, rs: Rowset, idx: Int) {
-			if(view is Text && idx == 1)
-				view.text = (rs.integer(idx) + 1).toString().padStart(3, '0')
-			else if(view is Text && idx == 2)
+			if(view is Text && idx == 2)
 				view.text = rs.integer(idx).datetime
 			else
 				super.bindField(view, rs, idx)

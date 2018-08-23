@@ -1,13 +1,16 @@
 package ru.ostrovskal.lode.objects
 
-import com.github.ostrovskal.ssh.Constants
 import com.github.ostrovskal.ssh.Constants.*
 import com.github.ostrovskal.ssh.singleton.Sound
-import com.github.ostrovskal.ssh.utils.flags
+import com.github.ostrovskal.ssh.utils.dirHorz
 import com.github.ostrovskal.ssh.utils.get
-import com.github.ostrovskal.ssh.utils.nflags
+import com.github.ostrovskal.ssh.utils.ntest
+import com.github.ostrovskal.ssh.utils.test
 import ru.ostrovskal.lode.Constants.*
 import ru.ostrovskal.lode.tables.Level
+import ru.ostrovskal.lode.tables.Level.fromMap
+import ru.ostrovskal.lode.tables.Level.isProp
+import ru.ostrovskal.lode.tables.Level.toMap
 import ru.ostrovskal.lode.views.ViewGame
 
 open class Enemy(x: Int, y: Int, tile: Byte) : Person(x, y, tile) {
@@ -19,86 +22,86 @@ open class Enemy(x: Int, y: Int, tile: Byte) : Person(x, y, tile) {
 	private fun changeDirection() {
 		px = Level.person.x
 		py = Level.person.y
-		control = if(x > px) Constants.DIRL else Constants.DIRR
-		control = control or if(y > py) Constants.DIRU else if(y < py) Constants.DIRD else Constants.DIRN
+		control = if(x > px) DIRL else DIRR
+		control = control or if(y > py) DIRU else if(y < py) DIRD else DIRN
 	}
 	
 	private fun moving() {
-		if(control flags DIRU) {
+		if(control test DIRU) {
 			if(moveUp()) {
 				if(y == py && y % SEGMENTS == 0) {
-					if(!isProp(x + if(control flags DIRR) SEGMENTS else -SEGMENTS, y, FN)) {
+					if(!isProp(x + control.dirHorz * SEGMENTS, y, FN)) {
 						changeDirection()
-						control = control xor DIRU
+						control = control and DIRU.inv()
 					}
 				}
 				return
 			}
 		}
-		else if(control flags DIRD) {
+		else if(control test DIRD) {
 			if(moveDown()) {
 				if(y == py && y % SEGMENTS == 0) {
-					if(!isProp(x + if(control flags DIRR) SEGMENTS else -SEGMENTS, y, FN)) {
+					if(!isProp(x + control.dirHorz * SEGMENTS, y, FN)) {
 						changeDirection()
-						control = control xor DIRD
+						control = control and DIRD.inv()
 					}
 				}
 				return
 			}
 		}
-		if(control flags DIRL) {
-			if(!moveLeft()) control = control xor (DIRL or DIRR)
+		if(control test DIRL) {
+			if(!moveLeft()) control = control xor DIRH
 		}
-		else if(control flags DIRR) {
-			if(!moveRight()) control = control xor (DIRL or DIRR)
+		else if(control test DIRR) {
+			if(!moveRight()) control = control xor DIRH
 		}
 	}
 	
 	override fun process(own: ViewGame): Boolean {
 		if(!own.isDead) {
-			val v = getFromMap(x, y)
-			val prop = remapProp[v]
-			setToMap(x, y, (v and MSKT).toByte())
-			if(prop flags FA) {
+			val prop = remapProp[fromMap(x, y)]
+			toMap(x, y, MSKT.toByte(), OPS_AND)
+			if(prop test FA) {
 				// проверить что убило(огонь, прожиг(ENEMY1, ENEMY2), задавило платформой(BETON))
 				val o = prop and MSKO
 				when {
-					prop flags FZ -> own.addScore(O_BETON)
+					prop test FZ  -> own.addScore(O_BETON)
 					o == O_ZARAST -> own.addScore(if(tile == T_ENEMY1_DROP) O_ENEMY1 else O_ENEMY1)
-					o == O_FIRE   -> {
-						own.addScore(O_FIRE)
-						Sound.playSound(SND_OBJECT_TO_FIRE)
-					}
+					o == O_FIRE   -> own.addScore(O_FIRE)
 				}
+				Sound.playSound(SND_ENEMY_DEAD)
 				// запустить десант(только для красных), случайно выбирая позицию
 				if(tile == T_ENEMY1_DROP) {
 					count = 0
 					repeat(Level.width) {
-						if(remapProp[Level.buffer[it, 0]] flags (FN or FD)) count++
+						if(remapProp[Level.buffer[it, 0]] test (FN or FD)) count++
 					}
 					if(count > 0) {
 						count = Level.rnd.nextInt(count)
 						repeat(Level.width) {
-							if(remapProp[Level.buffer[it, 0]] flags (FN or FD)) {
+							if(remapProp[Level.buffer[it, 0]] test (FN or FD)) {
 								count--
 								if(count == 0) return init(it, 0)
+							}
 						}
 					}
 				}
-				}
 				return false
 			}
-			count++
 			if(isExact()) {
-				if(count nflags 31) changeDirection()
+				if(count ntest 31) changeDirection()
 				checkDrop(prop)
 			}
-			if(count flags 1) {
-				if(isDrop) y++ else moving()
+			if(count test 1) {
+				if(control test MODE_DROP) y++ else moving()
 			}
-			setToMap(x, y, (getFromMap(x, y) or MSKE).toByte())
+			toMap(x, y, MSKE.toByte(), OPS_OR)
 		}
 		render(own)
 		return true
 	}
 }
+
+class Enemy1(x: Int, y: Int) : Enemy(x, y, T_ENEMY1_DROP)
+
+class Enemy2(x: Int, y: Int) : Enemy(x, y, T_ENEMY2_DROP)

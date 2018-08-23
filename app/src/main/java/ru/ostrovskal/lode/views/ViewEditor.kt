@@ -12,6 +12,7 @@ import android.view.SurfaceHolder
 import android.view.View
 import com.github.ostrovskal.ssh.AnimFrames
 import com.github.ostrovskal.ssh.Constants
+import com.github.ostrovskal.ssh.Constants.fPt
 import com.github.ostrovskal.ssh.STORAGE
 import com.github.ostrovskal.ssh.Touch
 import com.github.ostrovskal.ssh.utils.*
@@ -31,6 +32,9 @@ class ViewEditor(context: Context) : ViewCommon(context), AnimFrames.Callback {
 	// режим сдвига
 	@STORAGE @JvmField var modeShift    = SHIFT_UNDEF
 	
+	// содержимое под дроидом
+	@STORAGE @JvmField var contentPerson = T_NULL
+	
 	// признак модификации содержимого
 	@STORAGE @JvmField var modify       = false
 	
@@ -47,10 +51,9 @@ class ViewEditor(context: Context) : ViewCommon(context), AnimFrames.Callback {
 			if(modeShift == SHIFT_UNDEF && !preview) {
 				Touch.findTouch(0)?.apply {
 					val time = System.currentTimeMillis()
-					if((time - t0) > 200) {
+					if((time - t0) > 300) {
 						modeShift = SHIFT_MAP
-						//moffs.x = mapOffset.x - (p0.x / canvasTileSize).toInt()
-						//moffs.y = mapOffset.y - (p0.y / tileCanvasSize).toInt()
+						moffs.set(mapOffsetSegments.x, mapOffsetSegments.y)
 						view.invalidate()
 					}
 				}
@@ -71,23 +74,21 @@ class ViewEditor(context: Context) : ViewCommon(context), AnimFrames.Callback {
 				}
 				if(event) {
 					if(modeShift == SHIFT_MAP) {
-/*
 						Level.apply {
-							mapOffset.x = moffs.x + ((t.p0.x - offs.w) / canvasTileSize).toInt()
-							mapOffset.y = moffs.y + ((t.p0.y - offs.h) / canvasTileSize).toInt()
-							if(mapOffset.x < 0) mapOffset.x = 0
-							if(mapOffset.y < 0) mapOffset.y = 0
-							if((mapOffset.x + canvasSize.w) > width) mapOffset.x = width - canvasSize.w
-							if((mapOffset.y + canvasSize.h) > height) mapOffset.y = height - canvasSize.h
+							mapOffsetSegments.x = moffs.x - offs.w / segTileCanvas
+							mapOffsetSegments.y = moffs.y - offs.h / segTileCanvas
+							if(mapOffsetSegments.x < 0) mapOffsetSegments.x = 0
+							if(mapOffsetSegments.y < 0) mapOffsetSegments.y = 0
+							if((mapOffsetSegments.x + canvasSegments.w) > Level.mapSegments.w) mapOffsetSegments.x = Level.mapSegments.w - canvasSegments.w
+							if((mapOffsetSegments.y + canvasSegments.h) > Level.mapSegments.h) mapOffsetSegments.y = Level.mapSegments.h - canvasSegments.h
 							updatePreview(preview, false)
 						}
-*/
 					}
 				}
 				if(modeShift == SHIFT_TILE) {
 					t.resetPosition()
-					Constants.fPt.set(t.p0.x + offs.w, t.p0.y + offs.h)
-					shiftTile(Constants.fPt)
+					fPt.set(t.p0.x + offs.w, t.p0.y + offs.h)
+					shiftTile(t.p1)
 				}
 				if(!event) modeShift = SHIFT_UNDEF
 				invalidate()
@@ -97,47 +98,36 @@ class ViewEditor(context: Context) : ViewCommon(context), AnimFrames.Callback {
 		return super.onTouchEvent(ev)
 	}
 	
+	// установка элемента
 	private fun shiftTile(abs: PointF) {
 		Level.apply {
-			// установка элемента
-			val xx = previewMO.x + (Math.round(abs.x) - previewCO.x) / previewBlk.w
-			val yy = previewMO.y + (Math.round(abs.y) - previewCO.y) / previewBlk.h
+			val xx = previewMO.x / SEGMENTS + (Math.round(abs.x) - previewCO.x + (previewMO.x % SEGMENTS * segTileCanvas)) / previewBlk.w
+			val yy = previewMO.y / SEGMENTS + (Math.round(abs.y) - previewCO.y + (previewMO.y % SEGMENTS * segTileCanvas)) / previewBlk.h
 			// если по границе карты - пропускаем
-			if(xx == 0 || yy == 0 || xx >= width - 1 || yy >= height - 1) return@apply
+			if(xx < 0 || yy < 0 || xx >= width || yy >= height) return@apply
 			// текущий тайл
-			var o = wnd.findForm<FormEditor>("editor")?.curTile?.num ?: return@apply
+			var c = wnd.findForm<FormEditor>("editor")?.curTile?.num ?: return@apply
+			c = remapEditorTiles.search(c, T_NULL.toInt())
 			// содержимое карты по координатам
-			val oo = buffer[xx, yy]
+			val t = buffer[xx, yy]
 			// объект на карте
-			val objMap = remapProp[oo] and MSKO
+			val objMap = remapProp[t] and MSKO
 			// текущий объект
-			val objTile = remapProp[o] and MSKO
-			// они одинаковы?
-			if(objMap == objTile) {
-				// индекс объекта под пальцем
-/*
-				var ret = paramsEditElems.search(oo, -1)
-				if(ret != -1) {
-					// множественная установка
-					ret = (ret and -4) + (ret + 1 and 3)
-					o = paramsEditElems[ret]
+			val objTile = remapProp[c] and MSKO
+			if(objMap != objTile) {
+				with(Level) {
+					// если ставим поверх персонажа - стираем его координаты
+					if(remapProp[t] and MSKO == O_PERSON) person.x = -1
+					// если устанавливаем персонажа - старого стираем
+					else if(remapProp[c] and MSKO == O_PERSON) {
+						if(person.x >= 0) toMap(person.x, person.y, contentPerson)
+						contentPerson = t.toByte()
+						person.init(xx, yy)
+					}
 				}
-*/
+				buffer[xx, yy] = c
+				modify = true
 			}
-			// если устанавливаем дроида - старого стираем
-			// если ставим поверх дроида - стираем его координаты
-/*
-			else if(objMap == O_DROID) droidNull()
-			else if(objTile == O_DROID) {
-				val pt = droidPos()
-				// восстанавливаем содержимое под дроидом
-				if(!droidIsNull()) buffer[pt.x, pt.y] = contentDroid
-				contentDroid = oo.toByte()
-				droidPos(xx, yy)
-			}
-			buffer[xx, yy] = o
-*/
-			modify = true
 		}
 	}
 	
@@ -152,9 +142,7 @@ class ViewEditor(context: Context) : ViewCommon(context), AnimFrames.Callback {
 		if(super.handleMessage(msg)) {
 			when(msg.what) {
 				STATUS_INIT     -> surHandler?.send(Constants.MSG_SERVICE, 0, ACTION_LOAD, position)
-				STATUS_PREPARED -> {
-					sysMsg = ""; status = STATUS_LOOP
-				}
+				STATUS_PREPARED -> { sysMsg = ""; status = STATUS_LOOP }
 			}
 		}
 		return true

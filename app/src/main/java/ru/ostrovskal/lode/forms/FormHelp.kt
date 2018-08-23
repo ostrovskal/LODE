@@ -148,7 +148,7 @@ class FormHelp: Form() {
 	private class EditorPanel : UiComponent() {
 		override fun createView(ui: UiCtx): View = with(ui) {
 			cellLayout(28, 18) {
-				backgroundSet(style_panel)
+				backgroundSet(style_panel_h)
 				repeat(2) {row ->
 					repeat(9) { button(style_panel_tile) { numResource = tilesEditorPanel[row * 9 + it] }.lps(2 + it * 4, 5 + row * 4, 4, 4) }
 				}
@@ -160,7 +160,7 @@ class FormHelp: Form() {
 	private class GamePanel: UiComponent() {
 		override fun createView(ui: UiCtx): View = with(ui) {
 			cellLayout(15, 3, 1.dp, false) {
-				backgroundSet(style_panel)
+				backgroundSet(style_panel_h)
 				val fpos = 0
 				// очки
 				button(style_panel_tile) { numResource = R.integer.TILE_SCORE }.lps(1 + fpos, 1, 1, 2)

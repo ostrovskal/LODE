@@ -18,11 +18,14 @@ import ru.ostrovskal.lode.R
 import ru.ostrovskal.lode.objects.*
 import java.io.FileOutputStream
 import java.io.IOException
+import kotlin.experimental.and
+import kotlin.experimental.or
 
 object Level: Table() {
 	@JvmField val id        = integer("_id").notNull().primaryKey()
 	@JvmField val system    = text("system").notNull().references(Pack.name, RuleOption.CASCADE, RuleOption.CASCADE)
 	@JvmField val creator   = text("creator").notNull().default("OSTROV")
+	@JvmField val title     = text("title").notNull()
 	@JvmField val position  = integer("position").notNull().checked { it.between(0, 101) }
 	@JvmField val blocked   = integer("blocked").notNull().default(1)
 	@JvmField val content   = blob("content").notNull()
@@ -32,6 +35,7 @@ object Level: Table() {
 	@SqlField("create")     @JvmField var date    = 0L
 	@SqlField("blocked")    @JvmField var block   = true
 	@SqlField("content")    @JvmField var buffer  = byteArrayOf(0, 0)
+	@SqlField("title")      @JvmField var name    = ""
 	@SqlField("creator")    @JvmField var auth    = ""
 	@SqlField("system")     @JvmField var pack    = ""
 	
@@ -53,75 +57,131 @@ object Level: Table() {
 	// Размер карты в сегментах
 	@JvmField var mapSegments       = Size()
 	
-	val width                       get()   = buffer[0].toInt()
-	val height                      get()   = buffer[1].toInt()
+	inline val width                get()   = buffer[0].toInt()
+	inline val height               get()   = buffer[1].toInt()
 	
-	fun isIntersectPerson(x: Int, y: Int): Boolean {
-		val xx = Math.abs(x - person.x)
-		val yy = Math.abs(y - person.y)
-		val sz = SEGMENTS / 2
-		return xx <= sz && yy <= sz
+	// Поиск объекта по определенной позиции
+	fun findBox(x: Int, y: Int): Object? {
+		pool.forEach {
+			if(it !is Box) return@forEach
+			val xx = Math.abs(x - it.x)
+			val yy = Math.abs(y - it.y)
+			if(xx < SEGMENTS && yy < SEGMENTS) return it
+		}
+		return null
+	}
+	// Проверка на свойства элементов по определенным координатам на карте
+	fun isProp(x: Int, y: Int, p: Int, ops: Int = OPS_FULL, l: Int = 1): Boolean {
+		repeat(l) {
+			if(remapProp[fromMap(x + it * SEGMENTS, y)] test p) return true
+		}
+		return false
 	}
 
-	// Создать превью уровня
-	private fun preview(context: Context, blockSize: Int): Bitmap? {
+	// Установка/Очистка элементов в карте
+	fun toMap(x: Int, y: Int, t: Byte, ops: Int = OPS_SET, l: Int = 1) {
+		if(y < mapSegments.h && y >= 0 && x >= 0) {
+			var xx = x
+			val yy = y / SEGMENTS
+			repeat(l) {
+				if(xx < mapSegments.w) {
+					val tt = fromMap(xx, y).toByte()
+					buffer[xx / SEGMENTS, yy] = when(ops) {
+						OPS_SET     -> t
+						OPS_OR      -> tt or t
+						OPS_AND     -> tt and t
+						else        -> tt
+					}
+				}
+				xx += SEGMENTS
+			}
+		}
+	}
+	
+	// Получение значения элемента карты
+	fun fromMap(x: Int, y: Int): Int {
+		return if(y >= mapSegments.h || x >= mapSegments.w || y < 0 || x < 0) T_BETON.toInt() else buffer[x / SEGMENTS, y / SEGMENTS]
+	}
+
+	fun isIntersectPerson(x: Int, y: Int, inner: Boolean): Boolean {
+		val xx = Math.abs(x - person.x)
+		val yy = Math.abs(y - person.y)
+		val sz = if(inner) SEGMENTS / 2 else SEGMENTS
+		return xx <= sz && yy <= sz
+	}
+	
+	// Генерировать уровень
+	fun generator(context: Context, type: Int) {
+		buffer = byteArrayOf2D(width, height)
+		buffer.fill(tileGenLevel[type], 2, buffer.size)
+		buffer[1, 1] = O_PERSON
+		block = true
+		store(context)
+	}
+
+	// Ресайз уровня
+	fun resize(w: Int, h: Int) {
+		val nbuffer = byteArrayOf2D(w, h)
+		nbuffer.fill(T_NULL, 2, nbuffer.size)
+		val hh = Math.min(h, height)
+		val sz = Math.min(w, width)
+		repeat(hh) { System.arraycopy(buffer, 2 + it * width, nbuffer, 2 + it * w, sz) }
+		buffer = nbuffer
+	}
+	
+	// Создать миниатюру
+	private fun miniature(context: Context) {
 		val dst = Rect()
 		val src = Rect()
 		val mPaint = Paint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG)
 		// определяем максимальный габарит
 		val maxWidth = if(width > height) width else height
-		val sz = blockSize * maxWidth
+		val sz = BLOCK_MINIATURE * maxWidth
 		// выравнивание по центру
-		val offsX = (sz - blockSize * width) / 2
-		val offsY = (sz - blockSize * height) / 2
+		val offsX = (sz - BLOCK_MINIATURE * width) / 2
+		val offsY = (sz - BLOCK_MINIATURE * height) / 2
 		// создаем битмапы
-		val tiles = context.createBitmap(R.drawable.sprites) ?: return null
-		val min = Bitmap.createBitmap(sz, sz, Bitmap.Config.ARGB_8888) ?: return null
+		val tiles = context.createBitmap(R.drawable.sprites) ?: return
+		val min = Bitmap.createBitmap(sz, sz, Bitmap.Config.ARGB_8888) ?: return
 		val canvas = Canvas(min)
 		val wh = tiles.width / 10
 		// стираем превью
 		canvas.drawColor(0)
 		// нарисовать в битмап всю планету
 		repeat(height) {y ->
-			dst.top = offsY + y * blockSize
-			dst.bottom = dst.top + blockSize
+			dst.top = offsY + y * BLOCK_MINIATURE
+			dst.bottom = dst.top + BLOCK_MINIATURE
 			repeat(width) {x ->
-				val v = remapTiles[buffer[x, y]]
+				val v = remapGameTiles[buffer[x, y]]
 				src.left = v % 10 * wh
 				src.top = v / 10 * wh
 				src.right = src.left + wh
 				src.bottom = src.top + wh
-				dst.left = offsX + x * blockSize
-				dst.right = dst.left + blockSize
+				dst.left = offsX + x * BLOCK_MINIATURE
+				dst.right = dst.left + BLOCK_MINIATURE
 				canvas.drawBitmap(tiles, src, dst, mPaint)
 			}
 		}
 		tiles.recycle()
-		return min
-	}
-	
-	// Создать миниатюру
-	private fun miniature(context: Context)
-	{
-		val bmp = preview(context, BLOCK_MINIATURE) ?: return
-		FileOutputStream(makeDirectories("miniatures/$pack", Constants.FOLDER_FILES, "$num.png")).release {
-			bmp.compress(Bitmap.CompressFormat.PNG, 100, this)
+
+		FileOutputStream(makeDirectories("miniatures/$pack", Constants.FOLDER_FILES, "$name.png")).release {
+			min.compress(Bitmap.CompressFormat.PNG, 100, this)
 		}
-		bmp.recycle()
+		min.recycle()
 	}
 	
 	// Сохранить уровень
 	private fun save() {
-		val sb = StringBuilder((width + 1) * height + auth.length + 1)
-		// запомнить автора
-		sb.append("$auth\n")
+		val sb = StringBuilder((width + 1) * height + auth.length + 1 + 10)
+		// запомнить номер, автора
+		sb.append("$num\n").append("$auth\n")
 		// перекодировка
 		repeat(height) { y ->
 			repeat(width) { sb.append(charsOfLevelMap[remapProp[buffer[it, y] and MSKT] and MSKO]) }
 			sb.append('\n')
 		}
 		// запись
-		makeDirectories("levels/$pack", Constants.FOLDER_FILES, "$num.lv").writeText(sb.toString())
+		makeDirectories("levels/$pack", Constants.FOLDER_FILES, "$name.lv").writeText(sb.toString())
 	}
 	
 	// Добавить или обновить уровень в БД
@@ -150,7 +210,7 @@ object Level: Table() {
 	// Удалить уровень
 	fun delete(isReset: Boolean): Boolean {
 		// удалить из БД
-		if(delete { where { system.eq(pack) and position.eq(num) } } > 0L) {
+		if(delete { where { system.eq(pack) and position.eq(num) and title.eq(name) } } > 0L) {
 			// Изменить количество уровней в системе
 			Pack.changeCountLevels(pack, false)
 			// Сжать номера
@@ -168,9 +228,9 @@ object Level: Table() {
 			}
 			if(isReset) {
 				// удалить текстовое представление карты
-				makeDirectories("levels/$pack", Constants.FOLDER_FILES, "$num.lv").delete()
+				makeDirectories("levels/$pack", Constants.FOLDER_FILES, "$name.lv").delete()
 				// удалить миниатюру
-				makeDirectories("miniatures/$pack", Constants.FOLDER_FILES, "$num.png").delete()
+				makeDirectories("miniatures/$pack", Constants.FOLDER_FILES, "$name.png").delete()
 				// сброс
 				reset()
 			}
@@ -204,26 +264,36 @@ object Level: Table() {
 					O_POLZV  -> if(len > 1) pool.add(Polz(xx, yy, len, true)) else "Вертикальный ползунок {$xx, $yy} имеет недопустимую длину $len".debug()
 					O_BUTTON -> pool.add(Button(xx, yy))
 					O_FIRE   -> pool.add(Fire(xx, yy, len))
+					O_BOX    -> pool.add(Box(xx, yy))
+					O_BRIDGE -> pool.add(Bridge(xx, yy, len))
 					O_PLATH  -> pool.add(Platform(xx, yy, len, false))
 					O_PLATV  -> pool.add(Platform(xx, yy, len, true))
 					O_GOLD   -> gold += len
 				}
-				//"${o.obj} $len ${xx / SEGMENTS} ${yy / SEGMENTS}".info()
-				if(o >= O_PLATH && isGame) {
-					repeat(len) { buffer[x - it - 1, y] = T_NULL.toInt() }
-				}
+				//"${n.obj} ${o.obj} $len ${xx / SEGMENTS} ${yy / SEGMENTS}".info()
+				if(o < O_BOX || o >= O_BOX && !isGame) toMap(xx, yy, o.toByte(), OPS_SET, len)
 			}
 		}
 		pool.clear()
 		person.len = 0
 		person.x = -1
 		gold = 0
+		mapSegments.set(width * SEGMENTS, height * SEGMENTS)
+		
+//		var tbuffer = byteArrayOf2D(width * SEGMENTS, height * SEGMENTS)
+		var tbuffer = byteArrayOf2D(width, height)
+		tbuffer.fill(T_NULL, 2, tbuffer.size)
+		val nbuffer = buffer
+		buffer = tbuffer
+		tbuffer = nbuffer
+		
 		repeat(height) {y ->
-			var o = remapProp[buffer[0, y]] and MSKO
+			var o = remapProp[tbuffer[0, y]] and MSKO
 			var len = 0
 			repeat(width) { x ->
-				val prop = remapProp[buffer[x, y]]
-				val isLen = prop nflags FL
+				val n = tbuffer[x, y]
+				val prop = remapProp[n]
+				val isLen = prop ntest FL
 				val cur = prop and MSKO
 				if(cur != o || isLen) {
 					setObj(o, x, y, len)
@@ -240,7 +310,7 @@ object Level: Table() {
 	// Сбросить в исходное состояние
 	private fun reset() {
 		person.len = 0
-		auth = ""
+		auth = ""; name = ""
 		block = true
 		num = -1; gold = 0
 		buffer = byteArrayOf(0, 0)
@@ -260,17 +330,14 @@ object Level: Table() {
 				var res = true
 				// создать классические уровни
 				try {
-					num = it.substringBeforeLast('.').toLong()
+					name = it.substringBeforeLast('.')
 					val map = context.assets.open("$PACK_DEFAULT/$it").reader().releaseRun { readLines() }
-					auth = map[0]
-					buffer = byteArrayOf2D(map[1].length, map.size - 1)
+					num = map[0].toLong()
+					auth = map[1]
+					buffer = byteArrayOf2D(map[2].length, map.size - 2)
 					
 					repeat(height) {y ->
-						repeat(width) {x ->
-							var tile = charsOfLevelMap.search(map[y + 1][x], T_NULL.toInt())
-							if((remapProp[tile] and MSKO) == O_FIRE) tile = T_FIRE0 + rnd.nextInt(4)
-							buffer[x, y] = tile
-						}
+						repeat(width) { x -> buffer[x, y] = charsOfLevelMap.search(map[y + 2][x], T_NULL.toInt()) }
 					}
 				} catch(e: IOException) {
 					reset()

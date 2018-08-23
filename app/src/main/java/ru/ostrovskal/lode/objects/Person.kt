@@ -1,67 +1,52 @@
 package ru.ostrovskal.lode.objects
 
 import com.github.ostrovskal.ssh.Constants.*
-import com.github.ostrovskal.ssh.utils.flags
-import com.github.ostrovskal.ssh.utils.nflags
+import com.github.ostrovskal.ssh.utils.ntest
+import com.github.ostrovskal.ssh.utils.test
 import ru.ostrovskal.lode.Constants.*
 import ru.ostrovskal.lode.tables.Level
+import ru.ostrovskal.lode.tables.Level.fromMap
+import ru.ostrovskal.lode.tables.Level.isProp
+import ru.ostrovskal.lode.tables.Level.toMap
 import ru.ostrovskal.lode.views.ViewGame
 
 open class Person(x: Int, y: Int, tile: Byte) : Object(x, y, 1, tile) {
-	
-	// Направление движения
-	@JvmField var control                   = 0
-	
-	// Признак движения влево
-	@JvmField protected var isLeft          = false
-	
-	// Признак движения вправо
-	@JvmField protected var isRight         = false
-	
-	// Признак движения по лестнице
-	@JvmField protected var isTrap          = false
-	
-	// Признак падения
-	@JvmField protected var isDrop          = false
 	
 	// Начальная инициализация
 	fun init(xx: Int, yy: Int): Boolean {
 		x = xx * SEGMENTS
 		y = yy * SEGMENTS
 		len = 1
-		isDrop = false
-		isTrap = false
-		isLeft = false
-		isRight = false
+		control = 0
 		count = 0
 		return (x >= 0 && y >= 0)
 	}
 	
 	override fun process(own: ViewGame): Boolean {
-		val prop = remapProp[getFromMap(x, y)]
-		if(prop nflags FP || len > 0) {
+		val prop = remapProp[fromMap(x, y)]
+		if(prop ntest FP || len > 0) {
 			val o = prop and MSKO
 			val xx = x
 			val yy = y
 			
 			if(isExact()) {
 				if(o == O_GOLD) {
-					setToMap(x, y, T_NULL)
+					toMap(x, y, T_NULL)
 					own.processGold()
 				}
 				else if(o == O_SCORE) {
-					setToMap(x, y, T_NULL)
+					toMap(x, y, T_NULL)
 					own.processScore()
 				}
 				checkDrop(prop)
 			}
-			if(isDrop) y++
+			if(control test MODE_DROP) y++
 			else {
-				if(control flags DIR0) fire()
-				if(control flags DIRU) moveUp()
-				else if(control flags DIRD) moveDown()
-				if(control flags DIRL) moveLeft()
-				else if(control flags DIRR) moveRight()
+				if(control test DIR0) fire()
+				if(control test DIRU) moveUp()
+				else if(control test DIRD) moveDown()
+				if(control test DIRL) moveLeft()
+				else if(control test DIRR) moveRight()
 			}
 			if(x != xx || y != yy) own.initMap(false)
 		}// else len = 0
@@ -70,21 +55,21 @@ open class Person(x: Int, y: Int, tile: Byte) : Object(x, y, 1, tile) {
 	}
 	
 	private fun fire() {
-		if(y % SEGMENTS == 0) {
+		if(y % SEGMENTS == 0 && control ntest MODE_DROP) {
 			val segPos = x % SEGMENTS
 			val yy = y + SEGMENTS
 			var xx = x - segPos
 			// если стоит на краю блока
-			if(isRight) {
+			if(control test MODE_RIGHT) {
 				if(segPos > 2) xx += SEGMENTS
 			} else {
 				if(segPos > 0) xx += SEGMENTS
 			}
 			// x координата прожига
-			val dx = xx + if(isRight) SEGMENTS else -SEGMENTS
+			val dx = xx + if(control test MODE_RIGHT) SEGMENTS else - SEGMENTS
 			// проверки
 			if(isProp(dx, y, FF)) {
-				if((remapProp[getFromMap(dx, yy)] and MSKO) == O_WALL) {
+				if((remapProp[fromMap(dx, yy)] and MSKO) == O_WALL) {
 					Level.pool.add(Wall(dx, yy))
 					x = xx
 				}
@@ -93,25 +78,27 @@ open class Person(x: Int, y: Int, tile: Byte) : Object(x, y, 1, tile) {
 	}
 	
 	protected fun render(own: ViewGame) {
-		val t = tile + if(isTrap) 1 + y % SEGMENTS
-		else if(y % SEGMENTS == 0) {
+		val isY = y % SEGMENTS == 0
+		val t = tile + if(control test MODE_TRAP) {
+			val trap = (1 + y % SEGMENTS)
+			if(isY) {
+				if(isProp(x, y, FT)) trap else 0
+			} else trap
+		} else if(isY) {
 			val frame = x % SEGMENTS
-			if(isRight) 5 + frame else if(isLeft) 9 + frame else 0
+			if(control test MODE_RIGHT) 5 + frame else if(control test MODE_LEFT) 9 + frame else 0
 		} else 0
 		own.drawTile(x, y, t.toByte())
 	}
 	
 	protected fun checkDrop(prop: Int) {
-		if(prop nflags FT) {
-			if(isProp(x, y + SEGMENTS, FD)) {
-				isDrop = true
-				isTrap = false
-				isLeft = false
-				isRight = false
-			}
+		if(prop ntest FT) {
+			if(isProp(x, y + SEGMENTS, FD)) control = (control and (DIRH or DIRV)) or MODE_DROP
 			else {
-				if(isDrop) count = 15
-				isDrop = false
+				if(control test MODE_DROP) {
+					count = 15
+					control = control and MODE_DROP.inv()
+				}
 			}
 		}
 	}
@@ -119,16 +106,14 @@ open class Person(x: Int, y: Int, tile: Byte) : Object(x, y, 1, tile) {
 	protected fun moveDown(): Boolean {
 		if(x % SEGMENTS != 0) return false
 		if(y % SEGMENTS == 0) {
-			val prop = remapProp[getFromMap(x, y + SEGMENTS)]
-			if(prop flags FE) {
+			val prop = remapProp[fromMap(x, y + SEGMENTS)]
+			if(prop test FE) {
 				if(!isProp(x, y, FT)) return false
 				if(tile != T_PERSON_DROP) return false
-			} else if(prop nflags FD && prop nflags FT) return false
+			} else if(prop ntest FD && prop ntest FT) return false
 		}
 		y++
-		isRight = false
-		isLeft = false
-		isTrap = true
+		control = (control and (DIRH or DIRV)) or MODE_TRAP
 		return true
 	}
 	
@@ -136,45 +121,39 @@ open class Person(x: Int, y: Int, tile: Byte) : Object(x, y, 1, tile) {
 		if(x % SEGMENTS != 0) return false
 		if(y % SEGMENTS == 0) {
 			if(!isProp(x, y, FT)) return false
-			val prop = remapProp[getFromMap(x, y - SEGMENTS)]
-			if(prop flags FE) {
+			val prop = remapProp[fromMap(x, y - SEGMENTS)]
+			if(prop test FE) {
 				if(tile != T_PERSON_DROP) return false
-			} else if(prop nflags FN) return false
+			} else if(prop ntest FN) return false
 		}
 		y--
-		isRight = false
-		isLeft = false
-		isTrap = true
+		control = (control and (DIRH or DIRV)) or MODE_TRAP
 		return true
 	}
 	
 	protected fun moveLeft(): Boolean {
 		if(y % SEGMENTS != 0) return false
 		if(x % SEGMENTS == 0) {
-			val prop = remapProp[getFromMap(x - SEGMENTS, y)]
-			if(prop flags FE) {
+			val prop = remapProp[fromMap(x - SEGMENTS, y)]
+			if(prop test FE) {
 				if(tile != T_PERSON_DROP) return false
-			} else if(prop nflags FN) return false
+			} else if(prop ntest FN) return false
 		}
 		x--
-		isLeft = true
-		isRight = false
-		isTrap = false
+		control = (control and (DIRH or DIRV)) or MODE_LEFT
 		return true
 	}
 	
 	protected fun moveRight(): Boolean {
 		if(y % SEGMENTS != 0) return false
 		if(x % SEGMENTS == 0) {
-			val prop = remapProp[getFromMap(x + SEGMENTS, y)]
-			if(prop flags FE) {
+			val prop = remapProp[fromMap(x + SEGMENTS, y)]
+			if(prop test FE) {
 				if(tile != T_PERSON_DROP) return false
-			} else if(prop nflags FN) return false
+			} else if(prop ntest FN) return false
 		}
 		x++
-		isLeft = false
-		isRight = true
-		isTrap = false
+		control = (control and (DIRH or DIRV)) or MODE_RIGHT
 		return true
 	}
 }
