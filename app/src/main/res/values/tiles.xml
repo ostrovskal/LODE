@@ -7,12 +7,12 @@
     <integer name="TILE_SCORE">4</integer>
     <integer name="TILE_TRAPN">5</integer>
     <integer name="TILE_WALLN">6</integer>
-    <integer name="TILE_BUTTON">7</integer>
+    <integer name="TILE_NULL">7</integer>
     <integer name="TILE_DESTR0">8</integer>
     <integer name="TILE_DESTR1">9</integer>
     <integer name="TILE_DESTR2">10</integer>
     <integer name="TILE_DESTR3">11</integer>
-    <integer name="TILE_NULL">12</integer>
+    <integer name="TILE_BUTTON">12</integer>
     <integer name="TILE_ZARAST0">13</integer>
     <integer name="TILE_ZARAST1">14</integer>
     <integer name="TILE_ZARAST2">15</integer>

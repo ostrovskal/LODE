@@ -1,13 +1,14 @@
 package ru.ostrovskal.lode.objects
 
 import com.github.ostrovskal.ssh.Constants.*
+import com.github.ostrovskal.ssh.utils.info
 import com.github.ostrovskal.ssh.utils.ntest
 import com.github.ostrovskal.ssh.utils.test
 import ru.ostrovskal.lode.Constants.*
+import ru.ostrovskal.lode.arr
 import ru.ostrovskal.lode.tables.Level
 import ru.ostrovskal.lode.tables.Level.fromMap
 import ru.ostrovskal.lode.tables.Level.isProp
-import ru.ostrovskal.lode.tables.Level.toMap
 import ru.ostrovskal.lode.views.ViewGame
 
 open class Person(x: Int, y: Int, tile: Byte) : Object(x, y, 1, tile) {
@@ -30,25 +31,19 @@ open class Person(x: Int, y: Int, tile: Byte) : Object(x, y, 1, tile) {
 			val yy = y
 			
 			if(isExact()) {
-				if(o == O_GOLD) {
-					toMap(x, y, T_NULL)
-					own.processGold()
-				}
-				else if(o == O_SCORE) {
-					toMap(x, y, T_NULL)
-					own.processScore()
-				}
+				if(o == O_GOLD || o == O_SCORE) own.processSpec(x, y, o)
 				checkDrop(prop)
 			}
 			if(control test MODE_DROP) y++
 			else {
-				if(control test DIR0) fire()
-				if(control test DIRU) moveUp()
-				else if(control test DIRD) moveDown()
-				if(control test DIRL) moveLeft()
-				else if(control test DIRR) moveRight()
+				val c = own.cursor.buttonStates()
+				if(c test DIR0) fire()
+				if(c test DIRU) moveUp()
+				else if(c test DIRD) moveDown()
+				if(c test DIRL) moveLeft()
+				else if(c test DIRR) moveRight()
 			}
-			if(x != xx || y != yy) own.initMap(false)
+			if(x != xx || y != yy) own.prepareMap(false, true)
 		}// else len = 0
 		render(own)
 		return len > 0
@@ -68,6 +63,8 @@ open class Person(x: Int, y: Int, tile: Byte) : Object(x, y, 1, tile) {
 			// x координата прожига
 			val dx = xx + if(control test MODE_RIGHT) SEGMENTS else - SEGMENTS
 			// проверки
+			fromMap(dx, y).arr.info()
+			fromMap(dx, y + SEGMENTS).arr.info()
 			if(isProp(dx, y, FF)) {
 				if((remapProp[fromMap(dx, yy)] and MSKO) == O_WALL) {
 					Level.pool.add(Wall(dx, yy))

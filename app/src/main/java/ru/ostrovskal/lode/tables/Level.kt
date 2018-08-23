@@ -71,7 +71,7 @@ object Level: Table() {
 		return null
 	}
 	// Проверка на свойства элементов по определенным координатам на карте
-	fun isProp(x: Int, y: Int, p: Int, ops: Int = OPS_FULL, l: Int = 1): Boolean {
+	fun isProp(x: Int, y: Int, p: Int, l: Int = 1, ops: Int = OPS_FULL): Boolean {
 		repeat(l) {
 			if(remapProp[fromMap(x + it * SEGMENTS, y)] test p) return true
 		}
@@ -79,7 +79,7 @@ object Level: Table() {
 	}
 
 	// Установка/Очистка элементов в карте
-	fun toMap(x: Int, y: Int, t: Byte, ops: Int = OPS_SET, l: Int = 1) {
+	fun toMap(x: Int, y: Int, t: Byte, l: Int = 1, ops: Int = OPS_SET) {
 		if(y < mapSegments.h && y >= 0 && x >= 0) {
 			var xx = x
 			val yy = y / SEGMENTS
@@ -152,7 +152,14 @@ object Level: Table() {
 			dst.top = offsY + y * BLOCK_MINIATURE
 			dst.bottom = dst.top + BLOCK_MINIATURE
 			repeat(width) {x ->
-				val v = remapGameTiles[buffer[x, y]]
+				var v = remapTiles[buffer[x, y]]
+				if(v == T_FIRE0.toInt()) {
+					v = if(remapProp[buffer[x, y - 1]] and MSKT == O_FIRE) {
+						lavaTiles[x and 3].toInt()
+					} else {
+						fireTiles[x and 7].toInt()
+					}
+				}
 				src.left = v % 10 * wh
 				src.top = v / 10 * wh
 				src.right = src.left + wh
@@ -177,7 +184,7 @@ object Level: Table() {
 		sb.append("$num\n").append("$auth\n")
 		// перекодировка
 		repeat(height) { y ->
-			repeat(width) { sb.append(charsOfLevelMap[remapProp[buffer[it, y] and MSKT] and MSKO]) }
+			repeat(width) { sb.append(charsOfLevelMap[remapEditorProp[buffer[it, y] and MSKO] and MSKO]) }
 			sb.append('\n')
 		}
 		// запись
@@ -260,8 +267,8 @@ object Level: Table() {
 					O_PERSON -> { person.x = x - len; person.y = y}
 					O_ENEMY1 -> pool.add(0, Enemy1(xx, yy))
 					O_ENEMY2 -> pool.add(0, Enemy2(xx, yy))
-					O_POLZH  -> if(len > 1) pool.add(Polz(xx, yy, len, false)) else "Горизонтальный ползунок {$xx, $yy} имеет недопустимую длину $len".debug()
-					O_POLZV  -> if(len > 1) pool.add(Polz(xx, yy, len, true)) else "Вертикальный ползунок {$xx, $yy} имеет недопустимую длину $len".debug()
+					O_POLZH  -> if(len > 1) pool.add(Polz(xx, yy, len, false)) else "Горизонтальный ползунок {$xx, $yy} имеет недопустимую длину {$len}".debug()
+					O_POLZV  -> pool.add(Polz(xx, yy, len, true))
 					O_BUTTON -> pool.add(Button(xx, yy))
 					O_FIRE   -> pool.add(Fire(xx, yy, len))
 					O_BOX    -> pool.add(Box(xx, yy))
@@ -270,8 +277,8 @@ object Level: Table() {
 					O_PLATV  -> pool.add(Platform(xx, yy, len, true))
 					O_GOLD   -> gold += len
 				}
-				//"${n.obj} ${o.obj} $len ${xx / SEGMENTS} ${yy / SEGMENTS}".info()
-				if(o < O_BOX || o >= O_BOX && !isGame) toMap(xx, yy, o.toByte(), OPS_SET, len)
+				//"${o.obj} $len ${xx / SEGMENTS} ${yy / SEGMENTS}".info()
+				if(o < O_BRIDGE || o >= O_BRIDGE && !isGame) toMap(xx, yy, o.toByte(), len)
 			}
 		}
 		pool.clear()
@@ -282,20 +289,17 @@ object Level: Table() {
 		
 //		var tbuffer = byteArrayOf2D(width * SEGMENTS, height * SEGMENTS)
 		var tbuffer = byteArrayOf2D(width, height)
-		tbuffer.fill(T_NULL, 2, tbuffer.size)
+		tbuffer.fill(O_NULL.toByte(), 2, tbuffer.size)
 		val nbuffer = buffer
 		buffer = tbuffer
 		tbuffer = nbuffer
 		
 		repeat(height) {y ->
-			var o = remapProp[tbuffer[0, y]] and MSKO
+			var o = remapEditorProp[tbuffer[0, y]] and MSKO
 			var len = 0
 			repeat(width) { x ->
-				val n = tbuffer[x, y]
-				val prop = remapProp[n]
-				val isLen = prop ntest FL
-				val cur = prop and MSKO
-				if(cur != o || isLen) {
+				val cur = remapEditorProp[tbuffer[x, y]] and MSKO
+				if(cur != o || cur >= O_BUTTON) {
 					setObj(o, x, y, len)
 					len = 0
 				}

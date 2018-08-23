@@ -6,6 +6,11 @@ import ru.ostrovskal.lode.tables.Level.isProp
 import ru.ostrovskal.lode.views.ViewGame
 
 class Button(x: Int, y: Int) : Object(x, y, 1, T_BUTTON) {
+	
+	init {
+		Level.toMap(x, y, MSKZ.toByte(), 1, OPS_OR)
+	}
+
 	override fun process(own: ViewGame): Boolean {
 		val use = (Level.isIntersectPerson(x, y - SEGMENTS, true) || isProp(x, y - SEGMENTS, FE))
 		Level.useButton = use

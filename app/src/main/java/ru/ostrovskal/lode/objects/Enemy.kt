@@ -60,13 +60,13 @@ open class Enemy(x: Int, y: Int, tile: Byte) : Person(x, y, tile) {
 	override fun process(own: ViewGame): Boolean {
 		if(!own.isDead) {
 			val prop = remapProp[fromMap(x, y)]
-			toMap(x, y, MSKT.toByte(), OPS_AND)
+			toMap(x, y, MSKT.toByte(), 1, OPS_AND)
 			if(prop test FA) {
 				// проверить что убило(огонь, прожиг(ENEMY1, ENEMY2), задавило платформой(BETON))
 				val o = prop and MSKO
 				when {
 					prop test FZ  -> own.addScore(O_BETON)
-					o == O_ZARAST -> own.addScore(if(tile == T_ENEMY1_DROP) O_ENEMY1 else O_ENEMY1)
+					o == O_WALL   -> own.addScore(if(tile == T_ENEMY1_DROP) O_ENEMY1 else O_ENEMY1)
 					o == O_FIRE   -> own.addScore(O_FIRE)
 				}
 				Sound.playSound(SND_ENEMY_DEAD)
@@ -95,7 +95,7 @@ open class Enemy(x: Int, y: Int, tile: Byte) : Person(x, y, tile) {
 			if(count test 1) {
 				if(control test MODE_DROP) y++ else moving()
 			}
-			toMap(x, y, MSKE.toByte(), OPS_OR)
+			toMap(x, y, MSKE.toByte(), 1, OPS_OR)
 		}
 		render(own)
 		return true

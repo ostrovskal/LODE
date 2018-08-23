@@ -23,7 +23,6 @@ import ru.ostrovskal.lode.msg
 import ru.ostrovskal.lode.tables.Level
 import ru.ostrovskal.lode.tables.Level.rnd
 import java.util.*
-import kotlin.experimental.and
 
 class ViewGame(context: Context) : ViewCommon(context) {
 	
@@ -37,14 +36,7 @@ class ViewGame(context: Context) : ViewCommon(context) {
 	private val main                get() = wnd.main
 	
 	// курсор
-	private val cursor				= Controller(context, main, R.id.controller, false).apply {
-		setControllerMap(lodeController)
-		this.controllerButtonNotify = object : Controller.Notify {
-			override fun onController(buttons: Int) {
-				Level.person.control = (Level.person.control and 31.inv()) or buttons
-			}
-		}
-	}
+	@JvmField val cursor			= Controller(context, main, R.id.controller, false).apply { setControllerMap(lodeController) }
 	
 	 init {
 		main.setOnTouchListener { _, event ->
@@ -221,22 +213,23 @@ class ViewGame(context: Context) : ViewCommon(context) {
 		}
 	}
 
-	fun processScore() {
-		addScore(O_SCORE)
+	fun processSpec(x: Int, y: Int, o: Int) {
+		addScore(o)
 		Sound.playSound(SND_PERSON_TAKE)
-	}
-
-	fun processGold() {
-		params[PARAM_GOLD]--
-		addScore(O_GOLD)
-		Sound.playSound(SND_PERSON_TAKE)
-		if(params[PARAM_GOLD] == 0) {
-			// показать лестницу
-			repeat(Level.buffer.size - 2) {
-				if((Level.buffer[it + 2] and MSKT.toByte()) == T_TRAPN)
-					Level.buffer[it + 2] = T_TRAP
+		drawTile(x, y, T_NULL, true)
+		if(o == O_GOLD) {
+			params[PARAM_GOLD]--
+			if(params[PARAM_GOLD] == 0) {
+				// показать лестницу
+				repeat(Level.height) { yy ->
+					repeat(Level.width) { xx ->
+						if(Level.buffer[xx, yy] and MSKT == T_TRAPN.toInt()) {
+							drawTile(xx * SEGMENTS, yy * SEGMENTS, T_TRAP, true)
+						}
+					}
+				}
+				Sound.playSound(SND_LEVEL_CLEAR)
 			}
-			Sound.playSound(SND_LEVEL_CLEAR)
 		}
 	}
 }

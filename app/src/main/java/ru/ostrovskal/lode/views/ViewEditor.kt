@@ -29,11 +29,14 @@ class ViewEditor(context: Context) : ViewCommon(context), AnimFrames.Callback {
 	// Временная позиция карты. Используется при перетаскивании
 	private var moffs                   = Point()
 	
+	// признак перерисовки карты
+	private var updateMap               = false
+	
 	// режим сдвига
 	@STORAGE @JvmField var modeShift    = SHIFT_UNDEF
 	
 	// содержимое под дроидом
-	@STORAGE @JvmField var contentPerson = T_NULL
+	@STORAGE @JvmField var contentPerson= O_NULL.toByte()
 	
 	// признак модификации содержимого
 	@STORAGE @JvmField var modify       = false
@@ -74,15 +77,9 @@ class ViewEditor(context: Context) : ViewCommon(context), AnimFrames.Callback {
 				}
 				if(event) {
 					if(modeShift == SHIFT_MAP) {
-						Level.apply {
-							mapOffsetSegments.x = moffs.x - offs.w / segTileCanvas
-							mapOffsetSegments.y = moffs.y - offs.h / segTileCanvas
-							if(mapOffsetSegments.x < 0) mapOffsetSegments.x = 0
-							if(mapOffsetSegments.y < 0) mapOffsetSegments.y = 0
-							if((mapOffsetSegments.x + canvasSegments.w) > Level.mapSegments.w) mapOffsetSegments.x = Level.mapSegments.w - canvasSegments.w
-							if((mapOffsetSegments.y + canvasSegments.h) > Level.mapSegments.h) mapOffsetSegments.y = Level.mapSegments.h - canvasSegments.h
-							updatePreview(preview, false)
-						}
+						mapOffsetSegments.x = moffs.x - offs.w / segTileCanvas
+						mapOffsetSegments.y = moffs.y - offs.h / segTileCanvas
+						updateMap = true
 					}
 				}
 				if(modeShift == SHIFT_TILE) {
@@ -91,7 +88,6 @@ class ViewEditor(context: Context) : ViewCommon(context), AnimFrames.Callback {
 					shiftTile(t.p1)
 				}
 				if(!event) modeShift = SHIFT_UNDEF
-				invalidate()
 			}
 			return true
 		}
@@ -111,15 +107,15 @@ class ViewEditor(context: Context) : ViewCommon(context), AnimFrames.Callback {
 			// содержимое карты по координатам
 			val t = buffer[xx, yy]
 			// объект на карте
-			val objMap = remapProp[t] and MSKO
+			val objMap = remapEditorProp[t] and MSKO
 			// текущий объект
-			val objTile = remapProp[c] and MSKO
+			val objTile = remapEditorProp[c] and MSKO
 			if(objMap != objTile) {
 				with(Level) {
 					// если ставим поверх персонажа - стираем его координаты
-					if(remapProp[t] and MSKO == O_PERSON) person.x = -1
+					if(remapEditorProp[t] and MSKO == O_PERSON) person.x = -1
 					// если устанавливаем персонажа - старого стираем
-					else if(remapProp[c] and MSKO == O_PERSON) {
+					else if(remapEditorProp[c] and MSKO == O_PERSON) {
 						if(person.x >= 0) toMap(person.x, person.y, contentPerson)
 						contentPerson = t.toByte()
 						person.init(xx, yy)
@@ -128,6 +124,7 @@ class ViewEditor(context: Context) : ViewCommon(context), AnimFrames.Callback {
 				buffer[xx, yy] = c
 				modify = true
 			}
+			updateMap = true
 		}
 	}
 	
@@ -155,6 +152,10 @@ class ViewEditor(context: Context) : ViewCommon(context), AnimFrames.Callback {
 	}
 	
 	override fun draw(canvas: Canvas) {
+		if(updateMap) {
+			prepareMap(false, false)
+			updateMap = false
+		}
 		super.draw(canvas)
 		if(modeShift == SHIFT_MAP) {
 			// нарисовать признак перетаскивания карты

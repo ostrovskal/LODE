@@ -1,9 +1,7 @@
 package ru.ostrovskal.lode.objects
 
-import com.github.ostrovskal.ssh.utils.dirHorz
 import com.github.ostrovskal.ssh.utils.test
 import ru.ostrovskal.lode.Constants.*
-import ru.ostrovskal.lode.tables.Level
 import ru.ostrovskal.lode.tables.Level.isProp
 import ru.ostrovskal.lode.tables.Level.toMap
 import ru.ostrovskal.lode.views.ViewGame
@@ -23,6 +21,7 @@ class Box(x: Int, y: Int): Object(x, y, 1, T_BOX) {
 				setMap(xx, yy)
 			}
 		}
+/*
 		else if(Level.isIntersectPerson(x, y + SEGMENTS / 2, false)) {
 			val dir = ((Level.person.control and (MODE_RIGHT or MODE_LEFT)) shr 5).dirHorz
 			if(exact) {
@@ -32,12 +31,13 @@ class Box(x: Int, y: Int): Object(x, y, 1, T_BOX) {
 				}
 			}
 		}
+*/
 		own.drawTile(x, y, tile)
 		return true
 	}
 	
 	private fun setMap(xx: Int, yy: Int) {
-		toMap(xx, yy, MSKP.toByte(), OPS_AND)
-		toMap(x, y, MSKZ.toByte(), OPS_OR)
+		toMap(xx, yy, MSKT.toByte(), 1, OPS_AND)
+		toMap(x, y, MSKX.toByte(), 1, OPS_OR)
 	}
 }

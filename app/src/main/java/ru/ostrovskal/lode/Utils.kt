@@ -3,6 +3,7 @@ package ru.ostrovskal.lode
 import android.view.ViewManager
 import com.github.ostrovskal.ssh.Constants.*
 import com.github.ostrovskal.ssh.ui.uiView
+import com.github.ostrovskal.ssh.utils.test
 import ru.ostrovskal.lode.Constants.*
 import ru.ostrovskal.lode.views.ViewEditor
 import ru.ostrovskal.lode.views.ViewGame
@@ -19,9 +20,6 @@ val Int.obj get() = when(this) {
 	O_PLATV  -> "PLATV"
 	O_PLATH  -> "PLATH"
 	O_FIRE   -> "FIRE"
-	O_BUBBLE -> "BUBBLE"
-	O_ZARAST -> "ZARAST"
-	O_DESTR  -> "DESTR"
 	O_BETON  -> "BETON"
 	O_WALL   -> "WALL"
 	O_TRAP   -> "TRAP"
@@ -35,6 +33,30 @@ val Int.obj get() = when(this) {
 	else     -> "UNDEF"
 	
 }
+
+val Int.arr: String get() {
+	val e = if(this test MSKE) "E " else ""
+	val z = if(this test MSKZ) "Z " else ""
+	val x = if(this test MSKX) "X " else ""
+	val v = this and MSKT
+	return "${v.obj} $e$z$x"
+}
+
+val Int.prop: String get() {
+	val fa = if(this test FA) "FA " else ""
+	val fp = if(this test FP) "FP " else ""
+	val fz = if(this test FZ) "FZ " else ""
+	val fe = if(this test FE) "FE " else ""
+	val fb = if(this test FB) "FB " else ""
+	val fx = if(this test FX) "FX " else ""
+	val ff = if(this test FF) "FF " else ""
+	val fd = if(this test FD) "FD " else ""
+	val fn = if(this test FN) "FN " else ""
+	val ft = if(this test FT) "FT " else ""
+	val v = this and MSKO
+	return "${v.obj} $fa$fp$fd$fn$ft$ff$fb$fe$fz$fx"
+}
+
 val Int.msg get() = when(this) {
 	ACTION_FINISH   -> "ACTION_FINISH"
 	ACTION_PACK     -> "ACTION_PACK"
