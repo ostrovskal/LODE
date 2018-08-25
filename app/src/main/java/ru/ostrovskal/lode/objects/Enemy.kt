@@ -26,9 +26,9 @@ open class Enemy(x: Int, y: Int, tile: Byte) : Person(x, y, tile) {
 		control = control or if(y > py) DIRU else if(y < py) DIRD else DIRN
 	}
 	
-	private fun moving() {
+	private fun moving(prop: Int) {
 		if(control test DIRU) {
-			if(moveUp()) {
+			if(moveUp(prop)) {
 				if(y == py && y % SEGMENTS == 0) {
 					if(!isProp(x + control.dirHorz * SEGMENTS, y, FN)) {
 						changeDirection()
@@ -39,7 +39,7 @@ open class Enemy(x: Int, y: Int, tile: Byte) : Person(x, y, tile) {
 			}
 		}
 		else if(control test DIRD) {
-			if(moveDown()) {
+			if(moveDown(prop)) {
 				if(y == py && y % SEGMENTS == 0) {
 					if(!isProp(x + control.dirHorz * SEGMENTS, y, FN)) {
 						changeDirection()
@@ -50,7 +50,7 @@ open class Enemy(x: Int, y: Int, tile: Byte) : Person(x, y, tile) {
 			}
 		}
 		if(control test DIRL) {
-			if(!moveLeft()) control = control xor DIRH
+			if(!moveLeft(prop)) control = control xor DIRH
 		}
 		else if(control test DIRR) {
 			if(!moveRight()) control = control xor DIRH
@@ -58,9 +58,9 @@ open class Enemy(x: Int, y: Int, tile: Byte) : Person(x, y, tile) {
 	}
 	
 	override fun process(own: ViewGame): Boolean {
-		if(!own.isDead) {
+		if(own.nStart == 0) {
 			val prop = remapProp[fromMap(x, y)]
-			toMap(x, y, MSKT.toByte(), 1, OPS_AND)
+			toMap(x, y, MSKO.toByte(), 1, OPS_AND)
 			if(prop test FA) {
 				// проверить что убило(огонь, прожиг(ENEMY1, ENEMY2), задавило платформой(BETON))
 				val o = prop and MSKO
@@ -88,16 +88,14 @@ open class Enemy(x: Int, y: Int, tile: Byte) : Person(x, y, tile) {
 				}
 				return false
 			}
-			if(isExact()) {
-				if(count ntest 31) changeDirection()
-				checkDrop(prop)
-			}
+			if(count ntest 31) changeDirection()
+			checkDrop(prop)
 			if(count test 1) {
-				if(control test MODE_DROP) y++ else moving()
+				if(control test MODE_DROP) y++ else moving(prop)
 			}
 			toMap(x, y, MSKE.toByte(), 1, OPS_OR)
 		}
-		render(own)
+		own.drawTile(x, y, (tile + tx).toByte())
 		return true
 	}
 }

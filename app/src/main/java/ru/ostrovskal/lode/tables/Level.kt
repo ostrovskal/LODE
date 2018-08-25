@@ -45,6 +45,9 @@ object Level: Table() {
 	// Количество золота на уровне
 	@JvmField var gold              = 0
 	
+	// Признак подготовки карты
+	@JvmField var useMap            = false
+	
 	// Псевдослучайная величина
 	@JvmField val rnd               = Rand()
 
@@ -61,7 +64,7 @@ object Level: Table() {
 	inline val height               get()   = buffer[1].toInt()
 	
 	// Поиск объекта по определенной позиции
-	fun findBox(x: Int, y: Int): Object? {
+	fun findBox(x: Int, y: Int): Box? {
 		pool.forEach {
 			if(it !is Box) return@forEach
 			val xx = Math.abs(x - it.x)
@@ -117,6 +120,7 @@ object Level: Table() {
 		buffer[1, 1] = O_PERSON
 		block = true
 		store(context)
+		useMap = false
 	}
 
 	// Ресайз уровня
@@ -127,6 +131,7 @@ object Level: Table() {
 		val sz = Math.min(w, width)
 		repeat(hh) { System.arraycopy(buffer, 2 + it * width, nbuffer, 2 + it * w, sz) }
 		buffer = nbuffer
+		useMap = false
 	}
 	
 	// Создать миниатюру
@@ -250,8 +255,10 @@ object Level: Table() {
 	fun load(pos: Int, isClearObj: Boolean): Boolean {
 		select { where { Level.position.eq(pos.toLong()) and Level.system.eq(pack) } }.execute()?.release {
 			autoValues(Level)
-			if(setEntities(isClearObj))
+			if(setEntities(isClearObj)) {
+				useMap = false
 				return true
+			}
 		}
 		reset()
 		return false

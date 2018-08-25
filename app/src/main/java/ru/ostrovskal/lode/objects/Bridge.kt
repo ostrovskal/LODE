@@ -20,7 +20,7 @@ class Bridge(x: Int, y: Int, len: Int): Object(x, y, len, T_BRIDGE0) {
 		}
 		if(count > 20) {
 			val v = if(count > 28) 8 else count - 20
-			repeat(len) { own.drawTile(x + it * SEGMENTS, y, showBridgeTiles[v shr 1]) }
+			repeat(len) { own.drawTile(x + it * SEGMENTS, y, bridgeTiles[v shr 1]) }
 		}
 		return true
 	}

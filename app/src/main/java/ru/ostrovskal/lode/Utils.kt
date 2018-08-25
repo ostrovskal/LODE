@@ -23,6 +23,7 @@ val Int.obj get() = when(this) {
 	O_BETON  -> "BETON"
 	O_WALL   -> "WALL"
 	O_TRAP   -> "TRAP"
+	O_TUBE   -> "TUBE"
 	O_TRAPN  -> "TRAPN"
 	O_BOX    -> "BOX"
 	O_BRIDGE -> "BRIDGE"
@@ -53,8 +54,9 @@ val Int.prop: String get() {
 	val fd = if(this test FD) "FD " else ""
 	val fn = if(this test FN) "FN " else ""
 	val ft = if(this test FT) "FT " else ""
+	val fv = if(this test FV) "FV " else ""
 	val v = this and MSKO
-	return "${v.obj} $fa$fp$fd$fn$ft$ff$fb$fe$fz$fx"
+	return "${v.obj} $fa$fp$fd$fn$ft$ff$fb$fe$fz$fx$fv"
 }
 
 val Int.msg get() = when(this) {

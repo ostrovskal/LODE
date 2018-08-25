@@ -28,7 +28,7 @@ class ViewGame(context: Context) : ViewCommon(context) {
 	
 	// Признак запуска в тестовом режиме
 	@STORAGE @JvmField var isTest   = false
-	
+
 	// Признак опытного игрока
 	private var isMaster			= KEY_MASTER.optBool
 	
@@ -119,6 +119,7 @@ class ViewGame(context: Context) : ViewCommon(context) {
 						}
 						STATUS_CLEARED        -> {
 							status = STATUS_PREPARED
+							nStart = 50
 							s.send(MSG_SERVICE, 0, ACTION_LOAD, arg1)
 							// Первый запуск/Следующий уровень - запускаем музыку
 							if(arg2 == 1) Sound.playRandomMusic(wnd, true)
@@ -157,7 +158,7 @@ class ViewGame(context: Context) : ViewCommon(context) {
 	override fun draw(canvas: Canvas) {
 		super.draw(canvas)
 		post(updatePanel)
-		//processObjects()
+		if(nStart > 0) nStart--
 		if(status == STATUS_LOOP) {
 			if(newStatus == 0) {
 				if(isDead) {

@@ -14,10 +14,10 @@ class Wall(x: Int, y: Int) : Object(x, y, 1, T_DESTR0) {
 	}
 	
 	override fun process(own: ViewGame): Boolean {
-		if(count < 10 || count >= 100) {
-			val t = destrTiles[(count - (if(count >= 100) 90 else 1)) shr 1]
+		if(count < 10 || count >= 120) {
+			val t = destrTiles[(count - (if(count >= 120) 110 else 1)) shr 1]
 			own.drawTile(x, y, t, t == T_NULL || t == T_WALL)
 		}
-		return count < 108
+		return count < 128
 	}
 }

@@ -3,10 +3,8 @@ package ru.ostrovskal.lode.objects
 import com.github.ostrovskal.ssh.Constants.*
 import com.github.ostrovskal.ssh.utils.dirHorz
 import com.github.ostrovskal.ssh.utils.dirVert
-import com.github.ostrovskal.ssh.utils.info
 import com.github.ostrovskal.ssh.utils.test
 import ru.ostrovskal.lode.Constants.*
-import ru.ostrovskal.lode.prop
 import ru.ostrovskal.lode.tables.Level
 import ru.ostrovskal.lode.tables.Level.isProp
 import ru.ostrovskal.lode.tables.Level.toMap
@@ -19,42 +17,31 @@ open class Platform(x: Int, y: Int, length: Int, @JvmField protected val vert: B
 		toMap(x, y, MSKZ.toByte(), len, OPS_OR)
 	}
 	
-	fun isProp1(x: Int, y: Int, p: Int, l: Int = 1, ops: Int = OPS_FULL): Boolean {
-		repeat(l) {
-			val v = Level.fromMap(x + it * SEGMENTS, y)
-			//v.arr.info()
-			val ps = remapProp[v]
-			ps.prop.info()
-			if(ps test p) return true
-		}
-		return false
-	}
-
 	override fun process(own: ViewGame): Boolean {
-		if(count test 1) {
-			// стереть из массива
-			toMap(x, y, MSKP.toByte(), len + if(x % SEGMENTS > 1) 1 else 0, OPS_AND)
-			val exact = isExact()
-			if(Level.useButton || !exact) {
-				if(vert) {
-					if(exact) {
-						val yy = y + control.dirVert * SEGMENTS
-						if(yy < 0 || yy >= Level.mapSegments.h || isProp(x, yy, FB, len))
-							control = control xor DIRV
+		if(own.nStart == 0) {
+			if(count test 1) {
+				// стереть из массива
+				toMap(x, y, MSKP.toByte(), len + if(x % SEGMENTS > 1) 1 else 0, OPS_AND)
+				val exact = isExact()
+				if(Level.useButton || !exact) {
+					if(vert) {
+						if(exact) {
+							val yy = y + control.dirVert * SEGMENTS
+							if(yy < 0 || yy >= Level.mapSegments.h || isProp(x, yy, FB, len)) control = control xor DIRV
+						}
+						y += control.dirVert
 					}
-					y += control.dirVert
-				}
-				else {
-					if(exact) {
-						val xx = x + (if(control == DIRR) len else -1) * SEGMENTS
-						if(xx < 0 || xx >= Level.mapSegments.w || isProp(xx, y, FB))
-							control = control xor DIRH
+					else {
+						if(exact) {
+							val xx = x + (if(control == DIRR) len else -1) * SEGMENTS
+							if(xx < 0 || xx >= Level.mapSegments.w || isProp(xx, y, FB)) control = control xor DIRH
+						}
+						x += control.dirHorz
 					}
-					x += control.dirHorz
 				}
+				// записать в массив
+				toMap(x, y, MSKZ.toByte(), len + if(x % SEGMENTS > 1) 1 else 0, OPS_OR)
 			}
-			// записать в массив
-			toMap(x, y, MSKZ.toByte(), len + if(x % SEGMENTS > 1) 1 else 0, OPS_OR)
 		}
 		var dx = 0
 		if(this is Polz) {

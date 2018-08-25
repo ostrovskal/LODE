@@ -66,6 +66,7 @@ import static com.github.ostrovskal.ssh.StylesAndAttrs.THEME;
 
 public final class Constants
 {
+    // Карта контроллера
     public static final String lodeController        =  "ULULUUUUUUUUURUR\n" +
                                                         "ULULUUUUUUUUURUR\n" +
                                                         "LLLLULUUUUURRRRR\n" +
@@ -75,23 +76,19 @@ public final class Constants
                                                         "DLDLDDDDDDDDDRDR\n" +
                                                         "DLDLDDDDDDDDDRDR";
 
-    // Признак движения влево
-    public final static int MODE_LEFT               = 0x100;
-    // Признак движения вправо
-    public final static int MODE_RIGHT              = 0x200;
-    // Признак движения по лестнице
-    public final static int MODE_TRAP               = 0x20;
     // Признак падения
-    public final static int MODE_DROP               = 0x40;
-    // Признак толкания
-    //public final static int MODE_DRAG               = 0x80;
+    public final static int MODE_DROP               = 0x20;
+    // Признак движения влево
+    public final static int MODE_LEFT               = 0x40;
+    // Признак движения вправо
+    public final static int MODE_RIGHT              = 0x80;
 
-    // режимы сдвига
+    // Режимы сдвига в редакторе
     public static final int SHIFT_UNDEF            = 0;
     public static final int SHIFT_MAP              = 1;
     public static final int SHIFT_TILE             = 2;
 
-    // операции с массивом
+    // Операции с массивом
     public static final int OPS_SET                 = 0;
     public static final int OPS_OR                  = 1;
     public static final int OPS_AND                 = 2;
@@ -100,19 +97,20 @@ public final class Constants
     public static final int OPS_FULL                = 5;
 
     // Базовые
-    public static final String PACK_DEFAULT    = "classic";
-    public final static int    BLOCK_MINIATURE = 8;
-    //public final static int    LIMIT_RECORDS   = 50;
-    public final static int    STD_GAME_SPEED  = 30;
-    public final static int    SEGMENTS        = 4;
-    public final static int    PERSON_LIFE     = 5;
-    public final static int    PERSON_ADD_LIMIT= 1000;
-    // задержка между сменой статуса
-    public static final long MESSAGE_DELAYED   = 1000;
-    // задержка сплэш экрана
-    public static final long SPLASH_DELAYED    = 5000;
+    public static final String PACK_DEFAULT = "classic";
+    public final static int BLOCK_MINIATURE = 8;
+// public final static int  LIMIT_RECORDS   = 50;
+    public final static int STD_GAME_SPEED  = 30;
+    public final static int SEGMENTS        = 4;
+    public final static int PERSON_LIFE     = 5;
+    public final static int PERSON_ADD_LIMIT= 1000;
+    public final static int TILES_HORZ      = 11;
+    // Задержка между сменой статуса
+    public static final long MESSAGE_DELAYED= 1000;
+    // Задержка сплэш экрана
+    public static final long SPLASH_DELAYED = 5000;
 
-    // индексы звуков
+    // Индексы звуков
     public static final int SND_PERSON_TAKE  = 0;
     public static final int SND_VOLUME       = 1;
     public static final int SND_PERSON_DESTR = 2;
@@ -121,7 +119,7 @@ public final class Constants
     public static final int SND_LEVEL_NEXT   = 5;
     public static final int SND_ENEMY_DEAD   = 6;
 
-    // индексы параметров планеты
+    // Индексы параметров уровня
     public static final int PARAM_SCORE    = 0;
     public static final int PARAM_LIFE     = 1;
     public static final int PARAM_GOLD     = 2;
@@ -175,7 +173,7 @@ public final class Constants
     public final static int FORM_DLG_NEW_PACK   = 20;
     public final static int FORM_DLG_G_ACTIONS  = 21;
 
-    // дествия формы операций в редакторе планет
+    // Дествия формы операций в редакторе планет
     //public static final int  FORM_CHOICE_OPEN    = 1;
     //public static final int  FORM_CHOICE_NEW     = 2;
     public static final int    FORM_CHOICE_PROP    = 3;
@@ -218,16 +216,16 @@ public final class Constants
     public final static byte T_TRAPN            = 5;
     private final static byte T_WALLN           = 6;
     public final static byte T_NULL             = 7;
-    public final static byte T_DESTR0           = 8;
-    private final static byte T_DESTR1          = 9;
-    private final static byte T_DESTR2          = 10;
-    private final static byte T_DESTR3          = 11;
-    public final static byte T_BUTTON           = 12;
-    private final static byte T_ZARAST0         = 13;
-    private final static byte T_ZARAST1         = 14;
-    private final static byte T_ZARAST2         = 15;
-    private final static byte T_ZARAST3         = 16;
-    public final static byte T_BOX              = 17;
+    public final static byte T_TUBE             = 8;
+    public final static byte T_DESTR0           = 9;
+    private final static byte T_DESTR1          = 10;
+    private final static byte T_DESTR2          = 11;
+    private final static byte T_DESTR3          = 12;
+    public final static byte T_BUTTON           = 13;
+    private final static byte T_ZARAST0         = 14;
+    private final static byte T_ZARAST1         = 15;
+    private final static byte T_ZARAST2         = 16;
+    private final static byte T_ZARAST3         = 17;
     public final static byte T_FIRE0            = 18;
     private final static byte T_FIRE1           = 19;
     private final static byte T_FIRE2           = 20;
@@ -240,27 +238,26 @@ public final class Constants
     private final static byte T_LAVA1           = 27;
     private final static byte T_LAVA2           = 28;
     private final static byte T_LAVA3           = 29;
-    public final static byte T_BUTTON_PRESS     = 30;
+    public  final static byte T_BUTTON_PRESS    = 30;
     private final static byte T_BRIDGE          = 31;
     private final static byte T_PLATH           = 32;
     private final static byte T_PLATV           = 33;
     public final static byte T_POLZ_H_BEGIN     = 34;
     public final static byte T_POLZ_H_MIDDLE    = 35;
     public final static byte T_POLZ_H_END       = 36;
-    /*public final static byte T_POLZ_V_BEGIN   = 37;*/
     private final static byte T_POLZ_V_MIDDLE   = 38;
-    /*public final static byte T_POLZ_V_END     = 39;*/
+    public final static byte T_BOX              = 44;
 
-    public final static byte T_ENEMY1_DROP      = 40;
-    public final static byte T_ENEMY2_DROP      = 53;
-    public final static byte T_PERSON_DROP      = 66;
+    public final static byte T_ENEMY1_DROP      = 50;
+    public final static byte T_ENEMY2_DROP      = 65;
+    public final static byte T_PERSON_DROP      = 80;
 
-    public final static byte T_BUBBLE0          = 79;
+    public final static byte T_BUBBLE0          = 99;
 
-    public final static byte T_BRIDGE0          = 90;
-    private final static byte T_BRIDGE1         = 91;
-    private final static byte T_BRIDGE2         = 92;
-    private final static byte T_BRIDGE3         = 93;
+    public final static byte T_BRIDGE0          = 40;
+    private final static byte T_BRIDGE1         = 41;
+    private final static byte T_BRIDGE2         = 42;
+    private final static byte T_BRIDGE3         = 43;
 
     // Маски тайлов
     public final static int MSKT                = 0x0f;
@@ -275,12 +272,13 @@ public final class Constants
     public final static int FP                  = 0x040;// Человек гибнет
     public final static int FD                  = 0x080;// Все падают
     public final static int FN                  = 0x100;// Проходимый
-    public final static int FT                  = 0x200;// Лестница
+    public final static int FT                  = 0x200;// Лестница/Труба
     public final static int FB                  = 0x400;// Ползунок/Платформа не проходит
     public final static int FE                  = 0x0800;// Enemy на чем то
     public final static int FF                  = 0x1000;// Можно прорывать
     public final static int FZ                  = 0x2000;// Ползунок/Платформа
     public final static int FX                  = 0x4000;// Ящик
+    public final static int FV                  = 0x4000;// Труба
 
     // Типы объектов
     public final static int O_BETON  = 0;
@@ -291,18 +289,19 @@ public final class Constants
     public final static int O_TRAPN  = 5;
     public final static int O_WALLN  = 6;
     public final static int O_NULL   = 7;
-    public final static int O_FIRE   = 8;
-    public final static int O_BRIDGE = 9;
-    public final static int O_PLATH  = 10;
-    public final static int O_PLATV  = 11;
-    public final static int O_POLZH  = 12;
-    public final static int O_POLZV  = 13;
-    public final static int O_BUTTON = 14;
-    public final static int O_BOX    = 15;
-    public final static int O_ENEMY1 = 16;
-    public final static int O_ENEMY2 = 17;
-    public final static int O_PERSON = 18;
-    private final static int O_UNDEF = 19;
+    public final static int O_TUBE   = 8;
+    public final static int O_FIRE   = 9;
+    public final static int O_BRIDGE = 10;
+    public final static int O_PLATH  = 11;
+    public final static int O_PLATV  = 12;
+    public final static int O_POLZH  = 13;
+    public final static int O_POLZV  = 14;
+    public final static int O_BUTTON = 15;
+    public final static int O_BOX    = 16;
+    public final static int O_ENEMY1 = 17;
+    public final static int O_ENEMY2 = 18;
+    public final static int O_PERSON = 19;
+    private final static int O_UNDEF = 20;
 
     // Массив значений для добавления очков
     public final static int valuesAddScores[] = { 40, 0, 0, 50, 500, 0, 0, 0, 0, 20, 0, 0, 0, 0, 0, 0, 40, 100, 150, 0, 0 };
@@ -310,37 +309,52 @@ public final class Constants
     // Тайлы при генерации уровня
     public final static byte tileGenLevel[]     = { O_NULL, O_WALL, O_GOLD, O_TRAP};
 
-    public final static byte showBridgeTiles[]  = { T_BRIDGE0, T_BRIDGE1, T_BRIDGE2, T_BRIDGE3, T_WALL};
+    // Тайлы моста
+    public final static byte bridgeTiles[]      = {T_BRIDGE0, T_BRIDGE1, T_BRIDGE2, T_BRIDGE3, T_WALL};
 
+    // Тайлы разрушения/зарастания
     public final static byte destrTiles[]       = { T_DESTR0, T_DESTR1, T_DESTR2, T_DESTR3, T_NULL, T_ZARAST0, T_ZARAST1, T_ZARAST2, T_ZARAST3, T_WALL};
 
+    // Тайлы огня
     public final static byte fireTiles[]        = {T_FIRE0, T_FIRE1, T_FIRE2, T_FIRE3, T_FIRE4, T_FIRE5, T_FIRE6, T_FIRE7,
                                                    T_FIRE0, T_FIRE1, T_FIRE2, T_FIRE3, T_FIRE4, T_FIRE5, T_FIRE6, T_FIRE7};
 
+    // Тайла лавы
     public final static byte lavaTiles[]        = {T_LAVA0, T_LAVA1, T_LAVA2, T_LAVA3, T_LAVA0, T_LAVA1, T_LAVA2, T_LAVA3};
 
-    // Массив перекодировки тайлов в игре
-    public final static int remapGameTiles[]    = {T_BETON, T_WALL, T_TRAP, T_GOLD, T_SCORE, T_NULL, T_WALL, T_NULL, T_NULL};
+    // Таблица перекодировки тайлов в игре
+    public final static int remapGameTiles[]    = {T_BETON, T_WALL, T_TRAP, T_GOLD, T_SCORE, T_NULL, T_WALL, T_NULL, T_TUBE, T_NULL};
 
-    // Массив перекодировки тайлов в миниатюре
-    public final static int remapTiles[]        = {T_BETON, T_WALL, T_TRAP, T_GOLD, T_SCORE, T_NULL, T_WALL, T_NULL, T_FIRE0, T_NULL, T_WALL, T_WALL,
+    // Таблица перекодировки тайлов в миниатюре
+    public final static int remapTiles[]        = {T_BETON, T_WALL, T_TRAP, T_GOLD, T_SCORE, T_NULL, T_WALL, T_NULL, T_TUBE, T_FIRE0, T_NULL, T_WALL, T_WALL,
                                                    T_POLZ_H_MIDDLE, T_POLZ_H_MIDDLE, T_WALL, T_BOX, T_ENEMY1_DROP, T_ENEMY2_DROP, T_PERSON_DROP};
 
-    // Массив перекодировки тайлов в редакторе
-    public final static int remapEditorTiles[]   = {T_BETON, T_WALL, T_TRAP, T_GOLD, T_SCORE, T_TRAPN, T_WALLN, T_NULL, T_FIRE0, T_BRIDGE, T_PLATH, T_PLATV,
+    // Таблица перекодировки тайлов в редакторе
+    public final static int remapEditorTiles[]   = {T_BETON, T_WALL, T_TRAP, T_GOLD, T_SCORE, T_TRAPN, T_WALLN, T_NULL, T_TUBE, T_FIRE0, T_BRIDGE, T_PLATH, T_PLATV,
                                                     T_POLZ_H_MIDDLE, T_POLZ_V_MIDDLE, T_BUTTON, T_BOX, T_ENEMY1_DROP, T_ENEMY2_DROP, T_PERSON_DROP};
 
+    // Тайлы панели редактора
     public static final int[] tilesEditorPanel  = {R.integer.TILE_NULL, R.integer.TILE_WALL, R.integer.TILE_BETON, R.integer.TILE_TRAP, R.integer.TILE_TRAPN,
                                                    R.integer.TILE_GOLD, R.integer.TILE_BUTTON, R.integer.TILE_WALLN, R.integer.TILE_SCORE,
                                                    R.integer.TILE_ENEMY1_DROP, R.integer.TILE_ENEMY2_DROP, R.integer.TILE_PERSON_DROP, R.integer.TILE_PLATH,
                                                    R.integer.TILE_PLATV, R.integer.TILE_POLZH_MIDDLE, R.integer.TILE_POLZV_MIDDLE, R.integer.TILE_FIRE0,
-                                                   R.integer.TILE_BOX, R.integer.TILE_BRIDGE, R.integer.TILE_NULL};
+                                                   R.integer.TILE_BOX, R.integer.TILE_BRIDGE, R.integer.TILE_TUBE};
 
+    // Иконки действий редактора
     public static final int[] iconsEditorActions= {R.integer.I_OPEN_LEVEL, R.integer.I_NEW_LEVEL, R.integer.I_PROP_LEVEL, R.integer.I_DELETE_LEVEL, R.integer.I_BLOCKED, R.integer.I_SAVE_LEVEL, R.integer.I_SEND_PACK, R.integer.I_PREVIEW_OFF, R.integer.I_TEST_LEVEL, R.integer.I_HELP};
 
-    // Массив перекодировки номеров тайлов в символы
-    public final static char charsOfLevelMap[]  = {// 19 BETON, WALL, TRAP, GOLD, SCORE, TRAPN, WALLN, NULL,
-                                                   'B', 'W', 'H', 'x', 'S', 'h', 'N', ' ',
+    // Тайлы игровой панели
+    public final static int tilesGamePanel[]        = {R.integer.TILE_PERSON_DROP, R.integer.TILE_GOLD_PANEL, R.integer.TILE_WALL};
+
+    // Длины счетчиков
+    public static final int[]  formatLengths        = {6, 3, 3, 3};
+
+    // Смещение символов
+    public static final int[]  offsPerson           = {0, 1, 1, 2, 1, 1, 0, 2, 1, 1, 0, 2, 1, 1, 0, 2, 1, 1, 0};
+
+    // Таблица перекодировки символов в номера тайлов
+    public final static char charsOfLevelMap[]  = {// 19 BETON, WALL, TRAP, GOLD, SCORE, TRAPN, WALLN, NULL, TUBE
+                                                   'B', 'W', 'H', 'x', 'S', 'h', 'N', ' ', '_',
                                                    // FIRE, BRIDGE, PLATH, PLATV, POLZH, POLZV, BUTTON, BOX, ENEMY1, ENEMY2, PERSON
                                                    'F', '*', '=', '+', '-', '|', 'b', 'O', '1', '2', 'M'};
 
@@ -349,8 +363,8 @@ public final class Constants
                                                    0, O_WALL, O_TRAP, O_GOLD,
                                                    // T_SCORE, T_TRAPN, T_WALLN
                                                    O_SCORE, O_TRAPN, O_WALLN,
-                                                   // T_NULL, T_FIRE,
-                                                   O_NULL, O_FIRE,
+                                                   // T_NULL, T_TUBE, T_FIRE,
+                                                   O_NULL, O_TUBE, O_FIRE,
                                                    // T_BRIDGE, T_PLATH, T_PLATV, T_POLZ_H_MIDDLE, T_POLZ_V_MIDDLE
                                                    O_BRIDGE, O_PLATH, O_PLATV, O_POLZH, O_POLZV,
                                                    // T_BUTTON, T_BOX, T_ENEMY1_DROP, T_ENEMY2_DROP, T_PERSON_DROP
@@ -361,73 +375,68 @@ public final class Constants
                                                    FA | FP | FB, O_WALL | FA | FP | FB, O_TRAP | FT | FN | FB, O_GOLD | FN | FD | FB,
                                                    // T_SCORE, T_TRAPN, T_WALLN
                                                    O_SCORE | FN | FD | FB, O_TRAPN | FD | FN | FF, O_WALLN | FD | FN | FF,
-                                                   // T_NULL, T_FIRE,
-                                                   O_NULL | FD | FN | FF, O_FIRE | FN | FA | FD | FP,
+                                                   // T_NULL, T_TUBE, T_FIRE,
+                                                   O_NULL | FD | FN | FF, O_TUBE | FV | FN | FD | FB | FT , O_FIRE | FN | FA | FD | FP,
                                                    // SKIP
-                                                   O_UNDEF, O_UNDEF, O_UNDEF, O_UNDEF, O_UNDEF, O_UNDEF, O_UNDEF,
+                                                   O_UNDEF, O_UNDEF, O_UNDEF, O_UNDEF, O_UNDEF, O_UNDEF,
                                                    
                                                    // 16 (MSKX)
-                                                   // T_E_BETON, T_E_WALL, T_E_TRAP, T_E_GOLD
-                                                   O_UNDEF, O_UNDEF, O_TRAP | FX | FP | FB, O_UNDEF,
-                                                   // T_E_SCORE, T_E_TRAPN, T_E_WALLN
-                                                   O_UNDEF, O_TRAPN | FX | FF | FP | FA | FB, O_WALLN | FX | FF | FP | FA | FB,
-                                                   // T_E_NULL, T_E_FIRE,
-                                                   O_NULL | FX | FF | FP | FA | FB, O_FIRE | FX | FA | FP | FB,
+                                                   // T_X_BETON, T_X_WALL, T_X_TRAP, T_X_GOLD
+                                                   O_UNDEF, O_WALL | FA | FP , O_UNDEF, O_UNDEF,
+                                                   // T_X_SCORE, T_X_TRAPN, T_X_WALLN
+                                                   O_UNDEF, O_TRAPN | FX | FF | FP | FB, O_WALLN | FX | FF | FP | FB,
+                                                   // T_X_NULL, T_X_TUBE, T_X_FIRE,
+                                                   O_NULL | FX | FF | FP | FB, O_UNDEF, O_FIRE | FX | FP | FB,
                                                    // SKIP
-                                                   O_UNDEF, O_UNDEF, O_UNDEF, O_UNDEF, O_UNDEF, O_UNDEF, O_UNDEF, 
+                                                   O_UNDEF, O_UNDEF, O_UNDEF, O_UNDEF, O_UNDEF, O_UNDEF, 
                                                    
                                                    // 32 (MSKE)
                                                    // T_E_BETON, T_E_WALL, T_E_TRAP, T_E_GOLD
                                                    O_UNDEF, O_WALL | FE | FA | FP | FB, O_TRAP | FE | FP | FB, O_GOLD | FE | FP | FB,
                                                    // T_E_SCORE, T_E_TRAPN, T_E_WALLN
                                                    O_SCORE | FE | FP | FB, O_TRAPN | FE | FF | FP, O_WALLN | FE | FF | FP,
-                                                   // T_E_NULL, T_E_FIRE,
-                                                   O_NULL | FE | FF | FP, O_FIRE | FE | FN | FA | FD | FP,
+                                                   // T_E_NULL, T_E_TUBE, T_E_FIRE,
+                                                   O_NULL | FE | FF | FP, O_TUBE | FE | FV | FN | FP | FT | FB | FD, O_FIRE | FE | FN | FA | FD | FP,
                                                    // SKIP
-                                                   O_UNDEF, O_UNDEF, O_UNDEF, O_UNDEF, O_UNDEF, O_UNDEF, O_UNDEF,
+                                                   O_UNDEF, O_UNDEF, O_UNDEF, O_UNDEF, O_UNDEF, O_UNDEF,
                                                    
                                                    // 48 (MSKE MSKX)
                                                    // T_XE_BETON, T_XE_WALL, T_XE_TRAP, T_XE_GOLD
                                                    O_UNDEF, O_UNDEF, O_UNDEF, O_UNDEF,
                                                    // T_XE_SCORE, T_XE_TRAPN, T_XE_WALLN
                                                    O_UNDEF, O_TRAPN | FX | FE | FF | FP | FA | FB, O_WALLN | FX | FE | FF | FP | FA | FB,
-                                                   // T_XE_NULL, T_XE_FIRE,
-                                                   O_NULL | FX | FE | FF | FP | FA | FB, O_FIRE | FX | FE | FN | FA | FD | FP | FB,
+                                                   // T_XE_NULL, T_XE_TUBE, T_XE_FIRE,
+                                                   O_NULL | FX | FE | FF | FP | FA | FB, O_UNDEF, O_FIRE | FX | FE | FN | FA | FD | FP | FB,
                                                    // SKIP
-                                                   O_UNDEF, O_UNDEF, O_UNDEF, O_UNDEF, O_UNDEF, O_UNDEF, O_UNDEF,
+                                                   O_UNDEF, O_UNDEF, O_UNDEF, O_UNDEF, O_UNDEF, O_UNDEF,
                                                    
                                                    // 64 (MSKZ)
                                                    // T_Z_BETON, T_Z_WALL, T_Z_TRAP, T_Z_GOLD
                                                    O_UNDEF, O_UNDEF, O_UNDEF, O_UNDEF,
                                                    // T_Z_SCORE, T_Z_TRAPN, T_Z_WALLN
                                                    O_UNDEF, O_TRAPN | FZ | FP | FA | FB, O_WALLN | FZ | FP | FA | FB,
-                                                   // T_Z_NULL, T_Z_FIRE,
-                                                   O_NULL | FZ | FP | FA | FB, O_FIRE | FZ | FA | FP | FB,
+                                                   // T_Z_NULL, T_Z_TUBE, T_Z_FIRE,
+                                                   O_NULL | FZ | FP | FA | FB, O_UNDEF, O_FIRE | FZ | FA | FP | FB,
                                                    // SKIP
-                                                   O_UNDEF, O_UNDEF, O_UNDEF, O_UNDEF, O_UNDEF, O_UNDEF, O_UNDEF,
+                                                   O_UNDEF, O_UNDEF, O_UNDEF, O_UNDEF, O_UNDEF, O_UNDEF,
                                                    
                                                    // 80 (MSKX MSKZ)
                                                    // T_XZ_BETON, T_XZ_WALL, T_XZ_TRAP, T_XZ_GOLD
                                                    O_UNDEF, O_UNDEF, O_UNDEF, O_UNDEF,
                                                    // T_XZ_SCORE, T_XZ_TRAPN, T_XZ_WALLN
                                                    O_UNDEF, O_UNDEF, O_UNDEF,
-                                                   // T_XZ_NULL, T_XZ_FIRE,
-                                                   O_UNDEF, O_UNDEF,
+                                                   // T_XZ_NULL, T_XZ_TUBE, T_XZ_FIRE,
+                                                   O_UNDEF, O_UNDEF, O_UNDEF,
                                                    // SKIP
-                                                   O_UNDEF, O_UNDEF, O_UNDEF, O_UNDEF, O_UNDEF, O_UNDEF, O_UNDEF,
+                                                   O_UNDEF, O_UNDEF, O_UNDEF, O_UNDEF, O_UNDEF, O_UNDEF,
 
                                                    // 96 (MSKE MSKZ)
                                                    // T_EZ_BETON, T_EZ_WALL, T_EZ_TRAP, T_EZ_GOLD
                                                    O_UNDEF, O_UNDEF, O_UNDEF, O_UNDEF,
                                                    // T_EZ_SCORE, T_EZ_TRAPN, T_EZ_WALLN
                                                    O_UNDEF, O_TRAPN | FE | FZ | FP | FA | FB, O_WALLN | FE | FZ | FP | FA | FB,
-                                                   // T_EZ_NULL, T_EZ_FIRE,
-                                                   O_NULL | FE | FZ | FP | FA | FB, O_FIRE | FE | FZ | FA | FP | FB};
-
-    public final static int tilesGamePanel[]        = {R.integer.TILE_PERSON_DROP, R.integer.TILE_GOLD, R.integer.TILE_WALL};
-
-    // длины счетчиков
-    public static final int[]  formatLengths       = {6, 3, 3, 3};
+                                                   // T_EZ_NULL, T_EZ_TUBE, T_EZ_FIRE,
+                                                   O_NULL | FE | FZ | FP | FA | FB, O_UNDEF, O_FIRE | FE | FZ | FA | FP | FB};
 
     private static final int ATTR_SSH_COLOR_PANEL_COUNTERS  = 1000 | ATTR_INT;
     private static final int ATTR_SSH_COLOR_STAT_COUNTERS   = 1002 | ATTR_INT;
@@ -509,7 +518,7 @@ public final class Constants
                                                   ATTR_FONT, R.string.font_large};
 
     public static final int[] style_tile_lode = {ATTR_SSH_VERT, 10,
-                                                  ATTR_SSH_HORZ, 10,
+                                                  ATTR_SSH_HORZ, 11,
                                                   ATTR_FOCUSABLE, 0,
                                                   ATTR_CLICKABLE, 1,
                                                   ATTR_SSH_WIDTH_SELECTOR, 2,
@@ -551,7 +560,7 @@ public final class Constants
                                                      ATTR_FONT, R.string.font_normal};
 
     public static final int[] style_panel_tile =  {ATTR_SSH_BITMAP_NAME, ATTR_SSH_BM_TILES | THEME,
-                                                   ATTR_SSH_HORZ, 10,
+                                                   ATTR_SSH_HORZ, 11,
                                                    ATTR_SSH_VERT, 10,
                                                    ATTR_CLICKABLE, 0,
                                                    ATTR_FOCUSABLE, 0,

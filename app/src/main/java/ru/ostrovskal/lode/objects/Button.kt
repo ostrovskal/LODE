@@ -12,7 +12,7 @@ class Button(x: Int, y: Int) : Object(x, y, 1, T_BUTTON) {
 	}
 
 	override fun process(own: ViewGame): Boolean {
-		val use = (Level.isIntersectPerson(x, y - SEGMENTS, true) || isProp(x, y - SEGMENTS, FE))
+		val use = (Level.isIntersectPerson(x, y - SEGMENTS, true) || isProp(x, y - SEGMENTS, FE or FX))
 		Level.useButton = use
 		own.drawTile(x, y, if(use) T_BUTTON_PRESS else T_WALL)
 		return true

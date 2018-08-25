@@ -28,7 +28,11 @@ open class ViewCommon(context: Context) : Surface(context) {
 	@JvmField var canvasTileSize        = 0
 	
 	private var canvas: Canvas?         = null
+
+	// Счетчик при старте
+	@STORAGE @JvmField var nStart       = 100
 	
+	// Позиция уровня
 	@JvmField var position              = 0
 	
 	// Буфер для форматирования строк
@@ -156,6 +160,7 @@ open class ViewCommon(context: Context) : Surface(context) {
 				val h = (canvasSegments.h + SEGMENTS) * segTileCanvas
 				bg = Bitmap.createBitmap(w, h, Bitmap.Config.RGB_565)
 				"bitmap bg [$w - $h]".debug()
+				Level.useMap = true
 			}
 			var oldX = -1000
 			var oldY = -1000
@@ -173,7 +178,7 @@ open class ViewCommon(context: Context) : Surface(context) {
 			if(isLimitHeight) mapOffsetSegments.y = Level.mapSegments.h - canvasSegments.h
 			updatePreview(preview, full)
 
-			if(mapOffsetSegments.x / SEGMENTS != oldX || mapOffsetSegments.y / SEGMENTS != oldY) {
+			if(mapOffsetSegments.x / SEGMENTS != oldX || mapOffsetSegments.y / SEGMENTS != oldY || full) {
 
 				val w = previewMap.w + if(isLimitWidth || preview) 0 else 1
 				val h = previewMap.h + if(isLimitHeight || preview) 0 else 1
@@ -200,8 +205,8 @@ open class ViewCommon(context: Context) : Surface(context) {
 					repeat(w) { x ->
 						val tile = buffer[xo + x, yo + y] and msk
 						val v = remap[tile]
-						bitmapRect.left = v % 10 * tileBitmapSize
-						bitmapRect.top = v / 10 * tileBitmapSize
+						bitmapRect.left = v % TILES_HORZ * tileBitmapSize
+						bitmapRect.top = v / TILES_HORZ * tileBitmapSize
 						bitmapRect.right = bitmapRect.left + tileBitmapSize
 						bitmapRect.bottom = bitmapRect.top + tileBitmapSize
 						canvasRect.left = x * previewBlk.w
@@ -217,6 +222,8 @@ open class ViewCommon(context: Context) : Surface(context) {
 	override fun draw(canvas: Canvas) {
 		super.draw(canvas)
 		if(isLevel) {
+			if(!Level.useMap) prepareMap(true, true)
+			
 			this@ViewCommon.canvas = canvas
 			
 			val offsX = (previewMO.x % SEGMENTS) * segTileCanvas
@@ -266,7 +273,6 @@ open class ViewCommon(context: Context) : Surface(context) {
 			               Theme.dimen(context, R.dimen.shadowTextY) * 2f,
 			               0x0.color)
 		}
-		//if(canvasSegments.isEmpty()) prepareMap(true, true)
 	}
 
 	override fun handleMessage(msg: Message): Boolean {
@@ -299,7 +305,6 @@ open class ViewCommon(context: Context) : Surface(context) {
 								val success = Level.load(position, editor == null)
 								h.send(MSG_FORM, a1 = ACTION_NAME)
 								if(success) {
-									prepareMap(true, true)
 									if(editor != null) editor.modify = false else sysMsg = Level.name
 									s.send(STATUS_PREPARED, MESSAGE_DELAYED)
 								}
@@ -322,7 +327,6 @@ open class ViewCommon(context: Context) : Surface(context) {
 							}
 							ACTION_PROP     -> {
 								editor?.modify = true
-								prepareMap(true, true)
 								h.send(MSG_FORM, a1 = ACTION_NAME)
 							}
 							ACTION_DELETE   -> {
@@ -334,7 +338,6 @@ open class ViewCommon(context: Context) : Surface(context) {
 							ACTION_NEW      -> {
 								Level.generator(context, arg2)
 								editor?.modify = false
-								prepareMap(true, true)
 							}
 							ACTION_GENERATE -> {
 								Level.default(context)
@@ -355,8 +358,8 @@ open class ViewCommon(context: Context) : Surface(context) {
 		val yy = y - previewMO.y
 		val res = (xx > -SEGMENTS && yy > -SEGMENTS && xx < canvasSegments.w && yy < canvasSegments.h)
 		if(res) {
-			bitmapRect.left = t % 10 * tileBitmapSize
-			bitmapRect.top = t / 10 * tileBitmapSize
+			bitmapRect.left = t % TILES_HORZ * tileBitmapSize
+			bitmapRect.top = t / TILES_HORZ * tileBitmapSize
 			bitmapRect.right = bitmapRect.left + tileBitmapSize
 			bitmapRect.bottom = bitmapRect.top + tileBitmapSize
 			canvasRect.left = xx * segTileCanvas

@@ -40,7 +40,7 @@ class FormGame : Form() {
 		tmBACK = System.currentTimeMillis()
 	}
 	
-	override fun twicePressed() = true
+	override fun twicePressed() = !game.isTest
 	
 	override fun handleMessage(msg: Message) {
 		val s = game.surHandler
@@ -68,7 +68,7 @@ class FormGame : Form() {
 					backgroundSet(style_panel_h)
 					val fpos = if(port) 0 else 7
 					// очки
-					button(style_panel_tile) { numResource = R.integer.TILE_SCORE }.lps(1 + fpos, 1, 1, 2)
+					button(style_panel_tile) { numResource = R.integer.TILE_SCORE_PANEL }.lps(1 + fpos, 1, 1, 2)
 					text(R.string.empty_score, style_text_counters).lps(2 + fpos, 1, 6, 2)
 					// жизни, золото, уровень
 					repeat(3) {

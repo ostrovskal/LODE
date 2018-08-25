@@ -62,7 +62,7 @@ class FormEditorActions : FormDialog() {
 		when(idx) {
 			-1                  -> {}
 			FORM_CHOICE_SAVE    -> editor.surHandler?.send(Constants.MSG_SERVICE, 0, ACTION_SAVE)
-			FORM_CHOICE_PREV    -> editor.apply { preview = !preview; prepareMap(true, false) }
+			FORM_CHOICE_PREV    -> editor.apply { preview = !preview; Level.useMap = false }
 			FORM_CHOICE_TEST    -> wnd.apply {
 				super.footer(Constants.BTN_NO, 0)
 				// проверить на модификацию
