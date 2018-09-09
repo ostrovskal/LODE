@@ -165,8 +165,8 @@ object Level: Table() {
 						fireTiles[x and 7].toInt()
 					}
 				}
-				src.left = v % 10 * wh
-				src.top = v / 10 * wh
+				src.left = v % TILES_HORZ * wh
+				src.top = v / TILES_HORZ * wh
 				src.right = src.left + wh
 				src.bottom = src.top + wh
 				dst.left = offsX + x * BLOCK_MINIATURE
@@ -253,10 +253,10 @@ object Level: Table() {
 	
 	// Загрузить из БД
 	fun load(pos: Int, isClearObj: Boolean): Boolean {
+		useMap = false
 		select { where { Level.position.eq(pos.toLong()) and Level.system.eq(pack) } }.execute()?.release {
 			autoValues(Level)
 			if(setEntities(isClearObj)) {
-				useMap = false
 				return true
 			}
 		}
@@ -271,18 +271,16 @@ object Level: Table() {
 				val xx = (x - len) * SEGMENTS
 				val yy = y * SEGMENTS
 				when(o) {
-					O_PERSON -> { person.x = x - len; person.y = y}
-					O_ENEMY1 -> pool.add(0, Enemy1(xx, yy))
-					O_ENEMY2 -> pool.add(0, Enemy2(xx, yy))
-					O_POLZH  -> if(len > 1) pool.add(Polz(xx, yy, len, false)) else "Горизонтальный ползунок {$xx, $yy} имеет недопустимую длину {$len}".debug()
-					O_POLZV  -> pool.add(Polz(xx, yy, len, true))
-					O_BUTTON -> pool.add(Button(xx, yy))
-					O_FIRE   -> pool.add(Fire(xx, yy, len))
-					O_BOX    -> pool.add(Box(xx, yy))
-					O_BRIDGE -> pool.add(Bridge(xx, yy, len))
-					O_PLATH  -> pool.add(Platform(xx, yy, len, false))
-					O_PLATV  -> pool.add(Platform(xx, yy, len, true))
-					O_GOLD   -> gold += len
+					O_PERSON            -> { person.x = x - len; person.y = y}
+					O_ENEMY1            -> pool.add(0, Zomby1(xx, yy))
+					O_ENEMY2            -> pool.add(0, Zomby2(xx, yy))
+					O_POLZH, O_POLZV    -> pool.add(Polz(xx, yy, len, o == O_POLZV))
+					O_BUTTON            -> pool.add(Button(xx, yy))
+					O_FIRE              -> pool.add(Fire(xx, yy, len))
+					O_BOX               -> pool.add(Box(xx, yy))
+					O_BRIDGE            -> pool.add(Bridge(xx, yy, len))
+					O_PLATH, O_PLATV    -> pool.add(Platform(xx, yy, len, o == O_PLATV))
+					O_GOLD              -> gold += len
 				}
 				//"${o.obj} $len ${xx / SEGMENTS} ${yy / SEGMENTS}".info()
 				if(o < O_BRIDGE || o >= O_BRIDGE && !isGame) toMap(xx, yy, o.toByte(), len)

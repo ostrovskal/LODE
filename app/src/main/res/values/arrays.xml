@@ -51,11 +51,11 @@
     <string-array name="sound" translatable="false">
         <item>fx/take.ogg</item>
         <item>fx/volume.ogg</item>
-        <item>fx/destr.ogg</item>
-        <item>fx/dead.ogg</item>
-        <item>fx/cleared.ogg</item>
-        <item>fx/next.ogg</item>
-        <item>fx/enemy.ogg</item>
+        <item>fx/destr.mp3</item>
+        <item>fx/dead.mp3</item>
+        <item>fx/cleared.mp3</item>
+        <item>fx/next.mp3</item>
+        <item>fx/enemy.mp3</item>
     </string-array>
     <array name="music">
     </array>

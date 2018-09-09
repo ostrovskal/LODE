@@ -13,7 +13,7 @@ import ru.ostrovskal.lode.tables.Level.isProp
 import ru.ostrovskal.lode.tables.Level.toMap
 import ru.ostrovskal.lode.views.ViewGame
 
-open class Enemy(x: Int, y: Int, tile: Byte) : Person(x, y, tile) {
+open class Zomby(x: Int, y: Int, tile: Byte) : Person(x, y, tile) {
 	
 	// Координаты на которые наводится
 	private var px              = 0
@@ -27,10 +27,11 @@ open class Enemy(x: Int, y: Int, tile: Byte) : Person(x, y, tile) {
 	}
 	
 	private fun moving(prop: Int) {
+		val lr = isProp(x + control.dirHorz * SEGMENTS, y, FN)
 		if(control test DIRU) {
 			if(moveUp(prop)) {
 				if(y == py && y % SEGMENTS == 0) {
-					if(!isProp(x + control.dirHorz * SEGMENTS, y, FN)) {
+					if(lr) {
 						changeDirection()
 						control = control and DIRU.inv()
 					}
@@ -41,7 +42,7 @@ open class Enemy(x: Int, y: Int, tile: Byte) : Person(x, y, tile) {
 		else if(control test DIRD) {
 			if(moveDown(prop)) {
 				if(y == py && y % SEGMENTS == 0) {
-					if(!isProp(x + control.dirHorz * SEGMENTS, y, FN)) {
+					if(lr) {
 						changeDirection()
 						control = control and DIRD.inv()
 					}
@@ -100,6 +101,6 @@ open class Enemy(x: Int, y: Int, tile: Byte) : Person(x, y, tile) {
 	}
 }
 
-class Enemy1(x: Int, y: Int) : Enemy(x, y, T_ENEMY1_DROP)
+class Zomby1(x: Int, y: Int) : Zomby(x, y, T_ENEMY1_DROP)
 
-class Enemy2(x: Int, y: Int) : Enemy(x, y, T_ENEMY2_DROP)
+class Zomby2(x: Int, y: Int) : Zomby(x, y, T_ENEMY2_DROP)

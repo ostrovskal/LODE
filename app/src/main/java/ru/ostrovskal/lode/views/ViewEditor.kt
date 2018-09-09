@@ -24,7 +24,7 @@ import ru.ostrovskal.lode.tables.Level
 class ViewEditor(context: Context) : ViewCommon(context), AnimFrames.Callback {
 	
 	// Анимация, в качестве следящей за режимом сдвига
-	private val anim = AnimFrames(this, Int.MAX_VALUE, 100, this)
+	private val anim                    = AnimFrames(this, Int.MAX_VALUE, 100, this)
 	
 	// Временная позиция карты. Используется при перетаскивании
 	private var moffs                   = Point()
@@ -97,8 +97,8 @@ class ViewEditor(context: Context) : ViewCommon(context), AnimFrames.Callback {
 	// установка элемента
 	private fun shiftTile(abs: PointF) {
 		Level.apply {
-			val xx = previewMO.x / SEGMENTS + (Math.round(abs.x) - previewCO.x + (previewMO.x % SEGMENTS * segTileCanvas)) / previewBlk.w
-			val yy = previewMO.y / SEGMENTS + (Math.round(abs.y) - previewCO.y + (previewMO.y % SEGMENTS * segTileCanvas)) / previewBlk.h
+			val xx = previewMO.x / SEGMENTS + (Math.round(abs.x - previewCO.x + ((previewMO.x % SEGMENTS) * segTileCanvas)) / previewBlk.w)
+			val yy = previewMO.y / SEGMENTS + (Math.round(abs.y - previewCO.y + ((previewMO.y % SEGMENTS) * segTileCanvas)) / previewBlk.h)
 			// если по границе карты - пропускаем
 			if(xx < 0 || yy < 0 || xx >= width || yy >= height) return@apply
 			// текущий тайл

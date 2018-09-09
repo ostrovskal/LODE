@@ -88,7 +88,7 @@ open class Person(x: Int, y: Int, tile: Byte) : Object(x, y, 1, tile) {
 				control = control and MODE_DROP.inv()
 			}
 			if(prop ntest FT) {
-				val xx = x % SEGMENTS > 0
+				val xx = (x % SEGMENTS) > 0
 				if(isProp(x, y + SEGMENTS, FD)) {
 					var isD = true
 					if(xx) isD = isProp(x + SEGMENTS, y + SEGMENTS, FD)
@@ -97,7 +97,7 @@ open class Person(x: Int, y: Int, tile: Byte) : Object(x, y, 1, tile) {
 						tx = 0
 					}
 				}
-			} else if(prop test FV) tx = 11
+			} else if(prop test FV && tx == 0) tx = 9
 		}
 	}
 	
@@ -130,11 +130,10 @@ open class Person(x: Int, y: Int, tile: Byte) : Object(x, y, 1, tile) {
 				if(p test FE && tile != T_PERSON_DROP) return false
 			} else return false
 		}
-		tx = if(prop ntest FT) {
-			if(control test MODE_RIGHT) 5 else 9
-		} else {
-			if(tx == 1) 2 else 1
+		tx = if(prop ntest FT && y % SEGMENTS < 2) {
+			if(control test MODE_RIGHT) 5 else 8
 		}
+		else if(tx == 1) 2 else 1
 		y--
 		return true
 	}
@@ -153,7 +152,7 @@ open class Person(x: Int, y: Int, tile: Byte) : Object(x, y, 1, tile) {
 		}
 		tx1++
 		control = (control and (DIRV or DIRH)) or MODE_LEFT
-		tx = (if(prop test FV) 15 else 7) + (tx1 % 3)
+		tx = (if(prop test FV) 12 else 6) + (tx1 % 3)
 		x -= offsPerson[tx]
 		return true
 	}
@@ -172,7 +171,7 @@ open class Person(x: Int, y: Int, tile: Byte) : Object(x, y, 1, tile) {
 		}
 		tx1++
 		control = (control and (DIRV or DIRH)) or MODE_RIGHT
-		tx = (if(p test FV) 11 else 3) + (tx1 % 3)
+		tx = (if(p test FV) 9 else 3) + (tx1 % 3)
 		x += offsPerson[tx]
 		return true
 	}

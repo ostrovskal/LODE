@@ -3,7 +3,6 @@ package ru.ostrovskal.lode.views
 
 import android.content.Context
 import android.graphics.Canvas
-import android.os.Bundle
 import android.os.Message
 import android.view.SurfaceHolder
 import android.view.View
@@ -21,7 +20,6 @@ import ru.ostrovskal.lode.R
 import ru.ostrovskal.lode.forms.FormGame
 import ru.ostrovskal.lode.msg
 import ru.ostrovskal.lode.tables.Level
-import ru.ostrovskal.lode.tables.Level.rnd
 import java.util.*
 
 class ViewGame(context: Context) : ViewCommon(context) {
@@ -36,7 +34,10 @@ class ViewGame(context: Context) : ViewCommon(context) {
 	private val main                get() = wnd.main
 	
 	// курсор
-	@JvmField val cursor			= Controller(context, main, R.id.controller, false).apply { setControllerMap(lodeController) }
+	@JvmField val cursor			= Controller(context, main, R.id.controller, false).apply {
+		setControllerMap(lodeController)
+		wnd.main.addView(this)
+	}
 	
 	 init {
 		main.setOnTouchListener { _, event ->
@@ -53,18 +54,6 @@ class ViewGame(context: Context) : ViewCommon(context) {
 	
 	// Кэш параметров уровня
 	private var paramsCache 		= IntArray(PARAMS_COUNT)
-	
-	override fun restoreState(state: Bundle, vararg params: Any?) {
-		super.restoreState(state, *params)
-		cursor.restoreState(state)
-		rnd.restoreState(state)
-	}
-	
-	override fun saveState(state: Bundle, vararg params: Any?) {
-		super.saveState(state, *params)
-		cursor.saveState(state)
-		rnd.saveState(state)
-	}
 	
 	// Обновление счетчиков в основном потоке
 	private val updatePanel = Runnable {

@@ -2,7 +2,6 @@ package ru.ostrovskal.lode.views
 
 import android.content.Context
 import android.graphics.*
-import android.os.Bundle
 import android.os.Message
 import android.view.Gravity
 import android.view.SurfaceHolder
@@ -90,9 +89,6 @@ open class ViewCommon(context: Context) : Surface(context) {
 	// Смещение от начала канвы
 	@JvmField protected var previewCO	= Point()
 	
-	// Размер сегмента
-	@JvmField protected var previewSeg	= SizeF()
-	
 	// Тайлы
 	private val tiles: Bitmap?          get() = wnd.bitmapGetCache("sprites")
 
@@ -104,24 +100,31 @@ open class ViewCommon(context: Context) : Surface(context) {
 	private var messageRect 			= RectF()
 	
 	// Кисть для отрисовки сообщения
-	private var sys 					= Paint()
+	private var sys 					= Paint().apply {
+		color = Theme.integer(context, StylesAndAttrs.ATTR_SSH_COLOR_MESSAGE or StylesAndAttrs.THEME)
+		textSize = Theme.dimen(context, R.dimen.msg).toFloat()
+		textAlign = Paint.Align.CENTER
+		typeface = context.makeFont("large")
+		setShadowLayer(Theme.dimen(context, R.dimen.shadowTextR) * 2f,
+		               Theme.dimen(context, R.dimen.shadowTextX) * 2f,
+		               Theme.dimen(context, R.dimen.shadowTextY) * 2f,
+		               0x0.color)
+	}
 	
 	private var bg: Bitmap?             = null
 	
 	// "Пустая" кисть
-	private var nil 					= Paint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG)
+	private var nil 					= Paint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG).apply {
+		textSize = 20f.dp
+		textAlign = Paint.Align.RIGHT
+		color = Color.BLUE
+		typeface = context.makeFont("small")
+	}
 	
 	init {
 		delay = LodeWnd.applySpeed(STD_GAME_SPEED)
 		tileBitmapSize = (tiles?.height ?: 0) / 10
-	}
-	
-	override fun restoreState(state: Bundle, vararg params: Any?) {
-		super.restoreState(state, Level)
-	}
-	
-	override fun saveState(state: Bundle, vararg params: Any?) {
-		super.saveState(state, Level)
+		Level.useMap = false
 	}
 	
 	fun updatePreview(prev: Boolean, full: Boolean) {
@@ -136,8 +139,6 @@ open class ViewCommon(context: Context) : Surface(context) {
 			previewBlk.w = if(prev) (screenSize.w / w).toInt() else canvasTileSize
 			previewCO.x = if(prev) ((screenSize.w - (w * previewBlk.w)) / 2f).toInt() else canvasOffset.x
 			previewCO.y = if(prev) ((screenSize.h - (h * previewBlk.h)) / 2f).toInt() else canvasOffset.y
-			previewSeg.h = (if(prev) previewBlk.h / SEGMENTS else segTileCanvas).toFloat()
-			previewSeg.w = (if(prev) previewBlk.w / SEGMENTS else segTileCanvas).toFloat()
 		}
 		if(this is ViewEditor) KEY_EDIT_PREVIEW.optBool = prev
 	}
@@ -149,12 +150,13 @@ open class ViewCommon(context: Context) : Surface(context) {
 			if(full) {
 				Level.mapSegments.set(Level.width * SEGMENTS, Level.height * SEGMENTS)
 				val screenSegments = Size(screenSize.w / canvasTileSize * SEGMENTS, screenSize.h / canvasTileSize * SEGMENTS)
-				val offsX = screenSize.w - Level.mapSegments.w * segTileCanvas
-				val offsY = screenSize.h - Level.mapSegments.h * segTileCanvas
-				
-				canvasOffset.set(if(offsX <= 0) 0 else offsX / 2, if(offsY <= 0) screenSize.h % canvasTileSize else offsY / 2)
 				canvasSegments.set(if(screenSegments.w > Level.mapSegments.w) Level.mapSegments.w else screenSegments.w,
 				                   if(screenSegments.h > Level.mapSegments.h) Level.mapSegments.h else screenSegments.h)
+
+				val offsX = screenSize.w - canvasSegments.w * segTileCanvas
+				val offsY = screenSize.h - canvasSegments.h * segTileCanvas
+				
+				canvasOffset.set(if(offsX <= 0) 0 else offsX / 2, if(offsY <= 0) 0 else offsY)
 				Touch.reset()
 				val w = (canvasSegments.w + SEGMENTS) * segTileCanvas
 				val h = (canvasSegments.h + SEGMENTS) * segTileCanvas
@@ -180,14 +182,14 @@ open class ViewCommon(context: Context) : Surface(context) {
 
 			if(mapOffsetSegments.x / SEGMENTS != oldX || mapOffsetSegments.y / SEGMENTS != oldY || full) {
 
-				val w = previewMap.w + if(isLimitWidth || preview) 0 else 1
-				val h = previewMap.h + if(isLimitHeight || preview) 0 else 1
+				val wMap = previewMap.w + if(isLimitWidth || preview) 0 else 1
+				val hMap = previewMap.h + if(isLimitHeight || preview) 0 else 1
 				val xo = previewMO.x / SEGMENTS
 				val yo = previewMO.y / SEGMENTS
 				
 				val c = Canvas(bg)
 				
-				c.drawColor(0.color)
+				//c.drawColor(0.color)
 				
 				val msk: Int
 				
@@ -199,10 +201,10 @@ open class ViewCommon(context: Context) : Surface(context) {
 					remapEditorTiles
 				}
 				
-				repeat(h) { y ->
+				repeat(hMap) { y ->
 					canvasRect.top = y * previewBlk.h
 					canvasRect.bottom = canvasRect.top + previewBlk.h
-					repeat(w) { x ->
+					repeat(wMap) { x ->
 						val tile = buffer[xo + x, yo + y] and msk
 						val v = remap[tile]
 						bitmapRect.left = v % TILES_HORZ * tileBitmapSize
@@ -228,25 +230,28 @@ open class ViewCommon(context: Context) : Surface(context) {
 			
 			val offsX = (previewMO.x % SEGMENTS) * segTileCanvas
 			val offsY = (previewMO.y % SEGMENTS) * segTileCanvas
-			val w = previewMap.w * previewBlk.w
-			val h = previewMap.h * previewBlk.h
-			bitmapRect.set(offsX, offsY, offsX + w, offsY + h)
-			canvasRect.set(previewCO.x, previewCO.y, previewCO.x + w, previewCO.y + h)
+
+			bitmapRect.set(offsX, offsY, offsX + canvasSegments.w * segTileCanvas, offsY + canvasSegments.h * segTileCanvas)
+			canvasRect.set(previewCO.x, previewCO.y, previewCO.x + bitmapRect.width(), previewCO.y + bitmapRect.height())
 			canvas.drawBitmap(bg, bitmapRect, canvasRect, nil)
-			
-			if(this is ViewGame) {
-				var idx = 0
-				while(idx < Level.pool.size) {
-					val o = Level.pool[idx]
-					o.count++
-					if(!o.process(this)) {
-						// объект уничтожен
-						Level.pool.removeAt(idx)
-						idx--
+
+			canvas.withSave {
+				canvas.clipRect(canvasRect)
+				
+				if(this@ViewCommon is ViewGame) {
+					var idx = 0
+					while(idx < Level.pool.size) {
+						val o = Level.pool[idx]
+						o.count++
+						if(!o.process(this@ViewCommon)) {
+							// объект уничтожен
+							Level.pool.removeAt(idx)
+							idx--
+						}
+						idx++
 					}
-					idx++
+					isDead = !Level.person.process(this@ViewCommon)
 				}
-				isDead = !Level.person.process(this)
 			}
 
 			sys.drawTextInBounds(canvas, sysMsg, messageRect, Gravity.CENTER)
@@ -254,25 +259,16 @@ open class ViewCommon(context: Context) : Surface(context) {
 		else if(this is ViewEditor) {
 			sys.drawTextInBounds(canvas, wnd.getString(R.string.level_not_found), messageRect, Gravity.CENTER)
 		}
+		nil.drawTextInBounds(canvas, "fps: $fps", messageRect, Gravity.END or Gravity.BOTTOM)
 	}
 	
 	override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
 		super.surfaceChanged(holder, format, width, height)
 		// применить масштаб
-		canvasTileSize = (LodeWnd.applyScale((if(width > height) height else width) / (12 * config.multiplySW).toInt())) and -4
+		canvasTileSize = (LodeWnd.applyScale((if(width > height) height else width) / (12 * config.multiplySW).toInt())) and 3.inv()
 		segTileCanvas = canvasTileSize / SEGMENTS
 		screenSize.set(width, height)
 		messageRect.right = width.toFloat(); messageRect.bottom = height.toFloat()
-		sys.apply {
-			color = Theme.integer(context, StylesAndAttrs.ATTR_SSH_COLOR_MESSAGE or StylesAndAttrs.THEME)
-			textSize = Theme.dimen(context, R.dimen.msg).toFloat()
-			textAlign = Paint.Align.CENTER
-			typeface = context.makeFont("large")
-			setShadowLayer(Theme.dimen(context, R.dimen.shadowTextR) * 2f,
-			               Theme.dimen(context, R.dimen.shadowTextX) * 2f,
-			               Theme.dimen(context, R.dimen.shadowTextY) * 2f,
-			               0x0.color)
-		}
 	}
 
 	override fun handleMessage(msg: Message): Boolean {
@@ -356,24 +352,26 @@ open class ViewCommon(context: Context) : Surface(context) {
 	fun drawTile(x: Int, y: Int, t: Byte, isBg: Boolean = false): Boolean {
 		val xx = x - previewMO.x
 		val yy = y - previewMO.y
-		val res = (xx > -SEGMENTS && yy > -SEGMENTS && xx < canvasSegments.w && yy < canvasSegments.h)
+		if(isBg) Level.toMap(x, y, t)
+		val res = (xx > -SEGMENTS&& yy > -SEGMENTS && xx <= canvasSegments.w && yy <= canvasSegments.h)
 		if(res) {
 			bitmapRect.left = t % TILES_HORZ * tileBitmapSize
 			bitmapRect.top = t / TILES_HORZ * tileBitmapSize
 			bitmapRect.right = bitmapRect.left + tileBitmapSize
 			bitmapRect.bottom = bitmapRect.top + tileBitmapSize
-			canvasRect.left = xx * segTileCanvas
+			var offsX = (previewMO.x % SEGMENTS) * segTileCanvas
+			var offsY = (previewMO.y % SEGMENTS) * segTileCanvas
+			canvasRect.left = xx * segTileCanvas + offsX
 			canvasRect.right = canvasRect.left + previewBlk.w
-			canvasRect.top = yy * segTileCanvas
+			canvasRect.top = yy * segTileCanvas + offsY
 			canvasRect.bottom = canvasRect.top + previewBlk.h
-			if(isBg) {
-				Level.toMap(x, y, t)
-				Canvas(bg).drawBitmap(tiles, bitmapRect, canvasRect, nil)
-			}
-			canvasRect.left += previewCO.x
-			canvasRect.right += previewCO.x
-			canvasRect.top += previewCO.y
-			canvasRect.bottom += previewCO.y
+			if(isBg) Canvas(bg).drawBitmap(tiles, bitmapRect, canvasRect, nil)
+			offsX = previewCO.x - offsX
+			offsY = previewCO.y - offsY
+			canvasRect.left += offsX
+			canvasRect.right += offsX
+			canvasRect.top += offsY
+			canvasRect.bottom += offsY
 			canvas?.drawBitmap(tiles, bitmapRect, canvasRect, nil)
 		}
 		return res

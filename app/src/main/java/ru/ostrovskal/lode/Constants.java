@@ -9,7 +9,6 @@ import static com.github.ostrovskal.ssh.Constants.TILE_GRAVITY_CENTER;
 import static com.github.ostrovskal.ssh.Constants.TILE_SCALE_MIN;
 import static com.github.ostrovskal.ssh.Constants.TILE_SHAPE_ROUND;
 import static com.github.ostrovskal.ssh.Constants.TILE_STATE_HOVER;
-import static com.github.ostrovskal.ssh.StylesAndAttrs.ATTR_BACKGROUND;
 import static com.github.ostrovskal.ssh.StylesAndAttrs.ATTR_CLICKABLE;
 import static com.github.ostrovskal.ssh.StylesAndAttrs.ATTR_COLOR_DEFAULT;
 import static com.github.ostrovskal.ssh.StylesAndAttrs.ATTR_FOCUSABLE;
@@ -23,6 +22,7 @@ import static com.github.ostrovskal.ssh.StylesAndAttrs.ATTR_SHADOW_DY;
 import static com.github.ostrovskal.ssh.StylesAndAttrs.ATTR_SHADOW_RADIUS;
 import static com.github.ostrovskal.ssh.StylesAndAttrs.ATTR_SIZE;
 import static com.github.ostrovskal.ssh.StylesAndAttrs.ATTR_SSH_ALIGNED;
+import static com.github.ostrovskal.ssh.StylesAndAttrs.ATTR_SSH_BACKGROUND;
 import static com.github.ostrovskal.ssh.StylesAndAttrs.ATTR_SSH_BITMAP_NAME;
 import static com.github.ostrovskal.ssh.StylesAndAttrs.ATTR_SSH_BM_BACKGROUND;
 import static com.github.ostrovskal.ssh.StylesAndAttrs.ATTR_SSH_BM_BUTTONS;
@@ -31,7 +31,6 @@ import static com.github.ostrovskal.ssh.StylesAndAttrs.ATTR_SSH_BM_EDIT;
 import static com.github.ostrovskal.ssh.StylesAndAttrs.ATTR_SSH_BM_HEADER;
 import static com.github.ostrovskal.ssh.StylesAndAttrs.ATTR_SSH_BM_ICONS;
 import static com.github.ostrovskal.ssh.StylesAndAttrs.ATTR_SSH_BM_MENU;
-import static com.github.ostrovskal.ssh.StylesAndAttrs.ATTR_SSH_BM_RADIO;
 import static com.github.ostrovskal.ssh.StylesAndAttrs.ATTR_SSH_BM_SEEK;
 import static com.github.ostrovskal.ssh.StylesAndAttrs.ATTR_SSH_BM_SELECT;
 import static com.github.ostrovskal.ssh.StylesAndAttrs.ATTR_SSH_BM_SWITCH;
@@ -53,6 +52,7 @@ import static com.github.ostrovskal.ssh.StylesAndAttrs.ATTR_SSH_COLOR_WIRED;
 import static com.github.ostrovskal.ssh.StylesAndAttrs.ATTR_SSH_GRAVITY;
 import static com.github.ostrovskal.ssh.StylesAndAttrs.ATTR_SSH_HORZ;
 import static com.github.ostrovskal.ssh.StylesAndAttrs.ATTR_SSH_MODE;
+import static com.github.ostrovskal.ssh.StylesAndAttrs.ATTR_SSH_NUM;
 import static com.github.ostrovskal.ssh.StylesAndAttrs.ATTR_SSH_RADII;
 import static com.github.ostrovskal.ssh.StylesAndAttrs.ATTR_SSH_SCALE;
 import static com.github.ostrovskal.ssh.StylesAndAttrs.ATTR_SSH_SHAPE;
@@ -274,7 +274,7 @@ public final class Constants
     public final static int FN                  = 0x100;// Проходимый
     public final static int FT                  = 0x200;// Лестница/Труба
     public final static int FB                  = 0x400;// Ползунок/Платформа не проходит
-    public final static int FE                  = 0x0800;// Enemy на чем то
+    public final static int FE                  = 0x0800;// Zomby на чем то
     public final static int FF                  = 0x1000;// Можно прорывать
     public final static int FZ                  = 0x2000;// Ползунок/Платформа
     public final static int FX                  = 0x4000;// Ящик
@@ -350,7 +350,7 @@ public final class Constants
     public static final int[]  formatLengths        = {6, 3, 3, 3};
 
     // Смещение символов
-    public static final int[]  offsPerson           = {0, 1, 1, 2, 1, 1, 0, 2, 1, 1, 0, 2, 1, 1, 0, 2, 1, 1, 0};
+    public static final int[]  offsPerson           = {0, 1, 1, 2, 1, 1, 2, 1, 1, 2, 1, 1, 2, 1, 1};
 
     // Таблица перекодировки символов в номера тайлов
     public final static char charsOfLevelMap[]  = {// 19 BETON, WALL, TRAP, GOLD, SCORE, TRAPN, WALLN, NULL, TUBE
@@ -392,7 +392,7 @@ public final class Constants
                                                    
                                                    // 32 (MSKE)
                                                    // T_E_BETON, T_E_WALL, T_E_TRAP, T_E_GOLD
-                                                   O_UNDEF, O_WALL | FE | FA | FP | FB, O_TRAP | FE | FP | FB, O_GOLD | FE | FP | FB,
+                                                   O_UNDEF, O_WALL | FE | FA | FP | FB, O_TRAP | FE | FP | FT | FB, O_GOLD | FE | FP | FB,
                                                    // T_E_SCORE, T_E_TRAPN, T_E_WALLN
                                                    O_SCORE | FE | FP | FB, O_TRAPN | FE | FF | FP, O_WALLN | FE | FF | FP,
                                                    // T_E_NULL, T_E_TUBE, T_E_FIRE,
@@ -469,7 +469,6 @@ public final class Constants
                                            ATTR_SSH_BM_EDIT, R.drawable.theme_edit_dark,
                                            ATTR_SSH_BM_TOOLS, R.drawable.theme_tool_dark,
                                            ATTR_SSH_BM_BUTTONS, R.drawable.theme_button_dark,
-                                           ATTR_SSH_BM_RADIO, R.drawable.theme_radio_dark,
                                            ATTR_SSH_BM_CHECK, R.drawable.theme_check_dark,
                                            ATTR_SSH_BM_SEEK, R.drawable.theme_seek_dark,
                                            ATTR_SSH_BM_SWITCH, R.drawable.theme_switch_dark,
@@ -502,7 +501,6 @@ public final class Constants
                                             ATTR_SSH_BM_EDIT, R.drawable.theme_edit_light,
                                             ATTR_SSH_BM_TOOLS, R.drawable.theme_tool_light,
                                             ATTR_SSH_BM_BUTTONS, R.drawable.theme_button_light,
-                                            ATTR_SSH_BM_RADIO, R.drawable.theme_radio_light,
                                             ATTR_SSH_BM_CHECK, R.drawable.theme_check_light,
                                             ATTR_SSH_BM_SEEK, R.drawable.theme_seek_light,
                                             ATTR_SSH_BM_SWITCH, R.drawable.theme_switch_light,
@@ -522,7 +520,7 @@ public final class Constants
                                                   ATTR_FOCUSABLE, 0,
                                                   ATTR_CLICKABLE, 1,
                                                   ATTR_SSH_WIDTH_SELECTOR, 2,
-                                                  ATTR_BACKGROUND, ATTR_SSH_COLOR_SELECTOR | THEME,
+                                                  ATTR_SSH_BACKGROUND, ATTR_SSH_COLOR_SELECTOR | THEME,
                                                   ATTR_SSH_BITMAP_NAME, ATTR_SSH_BM_TILES | THEME};
 
     public static final int[] style_button_actions = {ATTR_SHADOW_DX, R.dimen.shadowTextX,
@@ -536,6 +534,7 @@ public final class Constants
                                                       ATTR_PADDING, 2,
                                                       ATTR_SSH_ALIGNED, 1,
                                                       ATTR_SSH_HORZ, 2,
+                                                      ATTR_SSH_NUM, 0,
                                                       ATTR_SSH_STATES, TILE_STATE_HOVER,
                                                       ATTR_GRAVITY, Gravity.CENTER,
                                                       ATTR_SSH_GRAVITY, TILE_GRAVITY_CENTER,
@@ -571,6 +570,6 @@ public final class Constants
     public static final int[] style_dlg_actions = {ATTR_SSH_SHAPE, TILE_SHAPE_ROUND,
                                                    ATTR_SSH_RADII, R.string.radii_dlg};
 
-    public static final int[] style_panel_h      = {ATTR_SSH_BITMAP_NAME, R.drawable.panel_horz};
-    public static final int[] style_panel_v      = {ATTR_SSH_BITMAP_NAME, R.drawable.panel_vert};
+    public static final int[] style_panel_h      = {ATTR_SSH_BITMAP_NAME, R.drawable.panel_horz, ATTR_SSH_NUM, 0};
+    public static final int[] style_panel_v      = {ATTR_SSH_BITMAP_NAME, R.drawable.panel_vert, ATTR_SSH_NUM, 0};
 }
